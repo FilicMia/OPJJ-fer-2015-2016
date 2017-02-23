@@ -1,0 +1,11 @@
+package hr.fer.zemris.java.cstr;
+
+public class Demo {
+
+	@SuppressWarnings("javadoc")
+	public static void main(String[] args) {
+		String str = new String(null);
+
+	}
+
+}

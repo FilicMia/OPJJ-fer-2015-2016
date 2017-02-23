@@ -1,0 +1,146 @@
+package hr.fer.zemris.java.tecaj.hw5.db;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Scanner;
+
+import hr.fer.zemris.java.tecaj.hw5.collections.SimpleHashtable.TableEntry;
+import hr.fer.zemris.java.tecaj.hw5.db.filter.QueryFilter;
+import hr.fer.zemris.java.tecaj.hw5.views.StringView;
+import hr.fer.zemris.java.tecaj.hw5.views.View;
+
+/**
+ * Program.
+ * 
+ * @author mia
+ *
+ */
+public class StudentDB {
+
+	/** String input which symbolizes the end of user queries. */
+	private static final String EXIT = "exit";
+
+	/**
+	 * Called when invoking the program.
+	 * 
+	 * @param args
+	 *            command-line arguments
+	 * @throws IOException
+	 */
+	public static void main(String[] args) {
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader("database.txt"));
+		} catch (FileNotFoundException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+		String line;
+		List<String> database = new ArrayList<String>();
+
+		try {
+			while ((line = reader.readLine()) != null) {
+				database.add(line);
+			}
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+		try {
+			reader.close();
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+
+		StudentDatabase base = new StudentDatabase(database);
+
+		String queryName;
+		QueryFilter exp = null;
+		String queryLine;
+		Scanner sc = new Scanner(System.in);
+		View view = new StringView();
+
+		do {
+			queryName = sc.next();
+			queryLine = sc.nextLine();
+			List<String> addThatSatisfies = new ArrayList<>();
+			List<StudentRecord> records = new ArrayList<>();
+			StudentRecord record = null;
+
+			switch (queryName.toLowerCase().trim()) {
+			case (QueryAnalyzer.INDEXQUERY):
+				try {
+					record = IndexQueryAnalyzer.indexQueryAnalyzer(queryLine, base);
+				} catch (InputMismatchException e) {
+					
+					invalidQueryHandler(sc);
+					break;
+				}
+				
+				if (record != null) {
+					records.add(record);
+				}
+				break;
+			case (QueryAnalyzer.QUERY):
+				try {
+					exp = new QueryFilter(queryLine);
+				} catch (InputMismatchException e) {
+					
+					invalidQueryHandler(sc);
+					break;
+				}
+				for (TableEntry<String, StudentRecord> data : base) {
+					if (exp.accepts(data.getValue())) {
+						// System.out.println(data.getValue().toString());
+						addThatSatisfies.add(data.getValue().toString());
+						records.add(data.getValue());
+					}
+				}
+
+				break;
+			case (EXIT):
+				break;
+			default:
+				
+				invalidQueryHandler(sc);
+			}
+
+			if (queryName.toLowerCase().equals(EXIT)) {
+				System.out.println("Goodbye!");
+				sc.close();
+				break;
+			}
+
+			if (records.size() > 0) {
+				String str = view.produce(records);
+				System.out.println(str);
+			}
+			System.out.println("Records: "+records.size());
+
+			exp = null;
+		} while (true);
+
+	}
+
+	/**
+	 * Private method that handles the invalid query.
+	 */
+	private static void invalidQueryHandler(Scanner sc) {
+		System.out.println("Invalid query input. Try again.");
+		System.out.println("For exit query input mode, enter: exit");
+		System.out.println("Do you whant to see some good examples?(Y/N)");
+		while(sc.hasNext("Y || N"))
+		
+		System.out.println("Some good queries are: ");
+		System.out.println("query lastName<\"Z*\" and jmgag=\"0000000001\" ");
+		System.out.println("indexquery jmbag=\"0000000001\" ");
+		
+	}
+
+}

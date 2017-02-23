@@ -1,0 +1,24 @@
+package hr.fer.zemris.java.tecaj.hw5.vgetter;
+
+import hr.fer.zemris.java.tecaj.hw5.db.StudentRecord;
+
+/**
+ * Responsible for obtaining requested field value form given
+ * {@code StudentRecord}
+ * 
+ * @author Mia FIlić
+ * @version 1.0
+ */
+
+public interface IFieldValueGetter {
+
+	/**
+	 * Obtaining field value form given {@code StudentRecord}
+	 * 
+	 * @param record
+	 *            one student's record
+	 * @return {@code String} representation of requested field
+	 */
+	public String get(StudentRecord record);
+
+}

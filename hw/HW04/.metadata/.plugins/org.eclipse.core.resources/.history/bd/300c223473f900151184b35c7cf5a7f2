@@ -1,0 +1,16 @@
+/**
+ * 
+ */
+
+/**
+ * The implementation of class String which offers similar functionality as the
+ * old JAVA official implementation of the String class.
+ * String instances don't allow users to change current data. That is the main reason 
+ * why the substring operations can be perforemed 
+ * 
+ * @author mia
+ *
+ */
+public class CString {
+
+}

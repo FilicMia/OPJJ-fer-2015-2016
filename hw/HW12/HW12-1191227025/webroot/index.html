@@ -1,0 +1,35 @@
+<html>
+<head>
+    <meta charset="utf8" />
+    <title>Primjer 1</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.js"></script>
+</head>
+<body>
+    <ul class="zivotinja">
+        <li>Pas</li>
+        <li>Mačka</li>
+        <li class="velika">Žirafa</li>
+    </ul>
+    <ul >
+        <li>Ppp</li>
+        <li>Mmm</li>
+        <li class="velika">Žzz</li>
+    </ul>
+    <ul class="zivotinja">
+        <li class="velika">Slon</li>
+        <li>Mrav</li>
+    </ul>
+
+    <script>
+		var lis = $("ul.zivotinja li");
+		var brojZivotinja = lis.length;
+		
+		var novi_ul = $("<ul></ul>");
+		for(var i = 0;i < lis.length;++i){
+			novi_ul.append(lis.eq(i).html());
+		}
+       
+        console.log( "Ukupno ima " + brojZivotinja + " životinja." );
+    </script>
+</body>
+</html>  

@@ -1,0 +1,25 @@
+/**
+ * 
+ */
+package hr.fer.zemris.java.graphics.views;
+
+import hr.fer.zemris.java.graphics.raster.BWRaster;
+
+
+public class SimpleRasterView implements RasterView {
+
+	/**
+	 * Outputs the textual representation of image to standard output and
+	 * returns null as result.
+	 * 
+	 * @param raster
+	 *            raster whose picture/image will produce
+	 * @return {@code null}
+	 */
+	@Override
+	public Object produce(BWRaster raster) {
+		
+		return null;
+	}
+
+}

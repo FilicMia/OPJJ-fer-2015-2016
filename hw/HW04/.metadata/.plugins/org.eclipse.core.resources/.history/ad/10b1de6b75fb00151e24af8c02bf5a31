@@ -1,0 +1,20 @@
+package hr.fer.zemris.java.graphics.views;
+
+/**
+ * Impleents methods that randers shapes.
+ * 
+ * @author mia
+ *
+ */
+public class RanderShapes {
+
+	/**
+	 * Randers shapes from given array of shapes and null references and
+	 * . Each time method encounter null reference in
+	 * array, changes flipping mode of raster object.
+	 */
+	public static void randerFromArrayToStdout() {
+
+	}
+
+}

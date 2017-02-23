@@ -1,0 +1,8 @@
+/home/mia/HW18-1191227025 (2)/src/main/java/hr/fer/zemris/java/hw18/init/Initialization.java
+/home/mia/HW18-1191227025 (2)/src/main/java/hr/fer/zemris/java/hw18/model/Picture.java
+/home/mia/HW18-1191227025 (2)/src/main/java/hr/fer/zemris/java/hw18/servlets/GetPicture.java
+/home/mia/HW18-1191227025 (2)/src/main/java/hr/fer/zemris/java/hw18/servlets/PictureProvider.java
+/home/mia/HW18-1191227025 (2)/src/main/java/hr/fer/zemris/java/hw18/servlets/ThumbnailProvider.java
+/home/mia/HW18-1191227025 (2)/src/main/java/hr/fer/zemris/java/hw18/servlets/GetTagPictures.java
+/home/mia/HW18-1191227025 (2)/src/main/java/hr/fer/zemris/java/hw18/servlets/TagsGetter.java
+/home/mia/HW18-1191227025 (2)/src/main/java/hr/fer/zemris/java/hw18/model/Galery.java

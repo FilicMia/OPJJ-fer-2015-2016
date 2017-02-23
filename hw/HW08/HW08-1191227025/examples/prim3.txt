@@ -1,0 +1,41 @@
+			load r7, @inputMessage
+			load r0, @uno
+			load r1, @zero
+			
+@start:		echo r7;
+			iinput 250;
+			move r2, 250;
+			move r2, [r2];
+			push r2 ; stavi koji broj treba izračunati
+			call @function;
+			increment r15
+@done:		echo r1		
+			
+			halt;
+
+@function:  push r3
+			push r2
+			push r4
+			move r3, 0
+			move r4, [r15+5]
+			#echo r4
+			testEquals r3, r4
+			jumpIfTrue @fiboOver
+			decrement r4
+			push r4; stavi koji broj treba izračunati
+			call @function
+			increment r15
+			add r2,r1,r0
+			move r0, r1
+			move r1, r2
+			
+@fiboOver:  pop r3
+			pop r2
+			pop r4
+			ret;
+
+@zero:	DEFINT 0
+@uno: DEFINT 1
+@inputMessage: DEFSTR "Unesite koji fibbonacijev broj\n želite izračunati(0-6):\n"
+			RESERVE:80
+@stackTop:	RESERVE

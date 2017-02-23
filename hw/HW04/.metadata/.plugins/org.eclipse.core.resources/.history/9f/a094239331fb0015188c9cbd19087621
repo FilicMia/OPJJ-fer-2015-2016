@@ -1,0 +1,26 @@
+package hr.fer.zemris.java.graphics.views;
+
+import hr.fer.zemris.java.graphics.raster.BWRaster;
+
+/**
+ * Class responsible for textual visualization of
+ * images. It saves it into string.
+ * 
+ * @author Mia Filić
+ *
+ */
+public class StringRasterView implements RasterView {
+	/**
+	 * Returns the string textual representation of image.
+	 * 
+	 * @param raster
+	 *            raster whose picture/image will produce
+	 * @return {@code null}
+	 */
+	@Override
+	public Object produce(BWRaster raster) {
+		String image = null;
+		
+		return image;
+	}
+}

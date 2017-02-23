@@ -1,0 +1,12 @@
+/**
+ * 
+ */
+package hr.fer.zemris.java.graphics.shapes;
+
+/**
+ * @author Mia FIlić
+ *
+ */
+public abstract class GeometricShape {
+
+}

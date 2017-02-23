@@ -1,0 +1,22 @@
+package hr.fer.zemris.java.graphics.shapes;
+
+public class Square extends AbstaractRectangle{
+
+	/**
+	 * Constructor. It sets properties of this square to its initial values.
+	 * 
+	 * @param x
+	 *            x coordinate of the upper left corner
+	 * @param y
+	 *            y coordinate of the upper left corner
+	 * @param size
+	 *            Size of the each side of square
+	 */
+	public Square(int x, int y, int size) {
+		super(x,y,size,size);
+	}
+	
+	public int getSize(){
+		return getHeight();
+	}
+}

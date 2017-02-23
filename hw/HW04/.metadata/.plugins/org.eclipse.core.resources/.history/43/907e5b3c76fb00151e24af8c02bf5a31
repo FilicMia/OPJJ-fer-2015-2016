@@ -1,0 +1,32 @@
+package hr.fer.zemris.java.graphics.views;
+
+import hr.fer.zemris.java.graphics.raster.BWRaster;
+import hr.fer.zemris.java.graphics.shapes.GeometricShape;
+
+/**
+ * Impleents methods that randers shapes.
+ * 
+ * @author mia
+ *
+ */
+public class RanderShapes {
+
+	/**
+	 * Randers shapes from given array of shapes and null references and . Each
+	 * time method encounter null reference in array, changes flipping mode of
+	 * raster object.
+	 * 
+	 * @param raste
+	 *            raster to randers to
+	 * @param shapes
+	 *            array of {@code GeometricShape} and null references.
+	 */
+	public static void randerFromArrayToStdout(BWRaster raster, GeometricShape[] shapes) {
+		int noShapes = shapes.length;
+		
+		for(int index = 0;index < noShapes;++index){
+			shapes[index].draw(raster);
+		}
+	}
+
+}

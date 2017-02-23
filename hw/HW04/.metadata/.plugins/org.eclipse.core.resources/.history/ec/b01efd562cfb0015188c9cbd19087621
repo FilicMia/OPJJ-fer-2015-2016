@@ -1,0 +1,163 @@
+/**
+ * 
+ */
+package hr.fer.zemris.java.graphics.shapes;
+
+import hr.fer.zemris.java.graphics.raster.BWRaster;
+
+/**
+ * Implements the geometric shape ellipse. Each ellipse is specified by its
+ * center and horizontal and vertical radius. Circle is special form of ellipse.
+ * 
+ * @author Mia Filić
+ *
+ */
+public abstract class AbstractEllipse extends GeometricShape {
+	/** x coordinate of the ellipse center. */
+	private int x;
+	/** y coordinate of the ellipse center. */
+	private int y;
+	/** Horizontal radius. */
+	private int rx;
+	/** Vertical radius. */
+	private int ry;
+
+	/**
+	 * Constructor that sets the properties on given values.
+	 * 
+	 * @param x
+	 *            x coordinate of the ellipse center
+	 * @param y
+	 *            y coordinate of the ellipse center
+	 * @param rx
+	 *            Horizontal radius
+	 * @param ry
+	 *            Vertical radius
+	 */
+	public AbstractEllipse(int x, int y, int rx, int ry) {
+		super();
+		this.x = x;
+		this.y = y;
+		this.rx = rx;
+		this.ry = ry;
+	}
+
+	/**
+	 * Returns the x coordinate of the center.
+	 * 
+	 * @return the x coordinate of the center.
+	 */
+	public int getX() {
+		return x;
+	}
+
+	/**
+	 * Sets the x coordinate of the center.
+	 * 
+	 * @param x
+	 *            the x coordinate of the center.
+	 */
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	/**
+	 * Returns the y coordinate of the center.
+	 * 
+	 * @return the y coordinate of the center.
+	 */
+	public int getY() {
+		return y;
+	}
+
+	/**
+	 * Sets the y coordinate of the center.
+	 * 
+	 * @param y
+	 *            the y coordinate of the center.
+	 */
+	public void setY(int y) {
+		this.y = y;
+	}
+
+	public int getRx() {
+		return rx;
+	}
+
+	/**
+	 * Sets the horizontal radius.
+	 * 
+	 * @param rx
+	 *            the horizontal radius.
+	 * @throws IllegalArgumentException
+	 *             if rx <= 0
+	 */
+	public void setRx(int rx) {
+		if (rx <= 0) {
+			throw new IllegalArgumentException(
+					"the horizontal radius can not be <= 0.");
+		}
+		this.rx = rx;
+	}
+
+	/**
+	 * Returns the vertical radius.
+	 * 
+	 * @return the vertical radius
+	 */
+	public int getRy() {
+		return ry;
+	}
+
+	/**
+	 * Sets the vertical radius.
+	 * 
+	 * @param ry
+	 *            the vertical radius.
+	 * @throws IllegalArgumentException
+	 *             if ry <= 0
+	 */
+	public void setRy(int ry) {
+		if (ry <= 0) {
+			throw new IllegalArgumentException(
+					"the vertical radius can not be <= 0.");
+		}
+		this.ry = ry;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean containsPoint(int x, int y) {
+		int rySq = Math.multiplyExact(ry, ry);
+		int rxSq = Math.multiplyExact(rx, rx);
+		if (rySq * (x - this.x) * (x - this.x)
+				+ rxSq * (y - this.y) * (y - this.y) <= rySq * rxSq) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void draw(BWRaster r) {
+		int lowerBoundWidth = Math.max(0, x - rx);
+		int upperBoundWidth = (x + rx) > 0 ? Math.min(x + rx, r.getWidth()) : 0;
+		int lowerBoundHeight = Math.max(0, y - ry);
+		int upperBoundHeight = (y + ry) > 0 ? Math.min(y + ry, r.getHeigth())
+				: 0;
+		r.disableFlipMode();
+		for (int x = lowerBoundWidth; x < upperBoundWidth; ++x) {
+			for (int y = lowerBoundHeight; y < upperBoundHeight; ++y) {
+				if (containsPoint(x, y)) {
+					r.turnOn(x, y);
+				}
+
+			}
+		}
+	}
+
+}

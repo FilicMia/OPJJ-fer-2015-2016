@@ -1,0 +1,147 @@
+/**
+ * 
+ */
+package hr.fer.zemris.java.graphics.raster;
+
+/**
+ * An implementation of the {@link BWRaster} interface.
+ * 
+ * @author Mia FIlić
+ *
+ */
+public class BWRasterMem implements BWRaster {
+
+	/** Width of this raster object. */
+	private final int width;
+	/** Height of this raster object. */
+	private final int height;
+	/**
+	 * Two dimensional array that saves BW-raster current state(picture/draw).
+	 */
+	private boolean[][] raster;
+	/** Current raster mode. */
+	private boolean flippedMode = false;
+
+	/**
+	 * Constructor that sets {@code BWRasterMem} properties.
+	 * 
+	 * @param width
+	 *            width of rater object
+	 * @param height
+	 *            height of raster object
+	 * @throws IllegalArgumentException
+	 *             one of dimensions is less than 1.
+	 */
+	public BWRasterMem(int width, int height) {
+		if (width < 1 || height < 1) {
+			throw new IllegalArgumentException("Invalid raster dimensions.");
+		}
+		this.width = width;
+		this.height = height;
+		raster = new boolean[height][width];
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getWidth() {
+		return width;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getHigh() {
+		return height;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void clear() {
+
+		for (int x = 0; x < height; ++x) {
+			for (int y = 0; y < width; ++y) {
+				raster[x][y] = false;
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void turnOn(int x, int y) {
+		if (!validDimensions(x, y)) {
+			throw new IllegalArgumentException(
+					"Illegal with" + "respect to raster dimensions");
+		}
+		if (flippedMode) {
+			raster[x][y] = !raster[x][y];
+		} else {
+			raster[x][y] = true;
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void turnOff(int x, int y) {
+		if (!validDimensions(x, y)) {
+			throw new IllegalArgumentException(
+					"Illegal with" + "respect to raster dimensions");
+		}
+		raster[x][y] = false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void enableFlipMode() {
+		flippedMode = true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void disableFlipMode() {
+		flippedMode = false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isTurnedOn(int x, int y) {
+		if (!validDimensions(x, y)) {
+			throw new IllegalArgumentException(
+					"Illegal with" + "respect to raster dimensions");
+		}
+		return raster[x][y];
+	}
+
+	/**
+	 * Supplementary method that checks if (x,y) is valid with the respect to
+	 * the raster dimensions or throws an {@code IllegalArgumentException}.
+	 * 
+	 * @param x
+	 *            x coordinate
+	 * @param y
+	 *            y coordinate
+	 * @return {@code true} if position is valid, {@code false} otherwise
+	 */
+	private boolean validDimensions(int x, int y) {
+		if (x < 0 || y < 0 || x >= height || y >= width) {
+			return false;
+		}
+		return true;
+	}
+
+}

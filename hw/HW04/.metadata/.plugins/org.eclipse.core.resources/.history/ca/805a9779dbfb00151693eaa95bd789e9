@@ -1,0 +1,107 @@
+package hr.fer.zemris.java.graphics.shapes;
+
+import org.junit.Test;
+
+import hr.fer.zemris.java.graphics.raster.*;
+import hr.fer.zemris.java.graphics.views.RasterView;
+import hr.fer.zemris.java.graphics.views.SimpleRasterView;
+
+public class GeometricShapesTest {
+
+	@Test
+	public void First() {
+		Rectangle rect1 = new Rectangle(0, 0, 4, 4);
+		Rectangle rect2 = new Rectangle(1, 1, 2,2);
+		BWRaster raster = new BWRasterMem(6, 5);
+		raster.enableFlipMode();
+		rect1.draw(raster);
+		rect2.draw(raster);
+		RasterView view = new SimpleRasterView();
+		view.produce(raster);
+		view.produce(raster);
+		System.out.println();
+		RasterView view2 = new SimpleRasterView('X', '_');
+		view2.produce(raster);
+	}
+	
+	@Test
+	public void Second() {
+		Rectangle rect1 = new Rectangle(0, 0, 4, 4);
+		Circle rect2 = new Circle(1, 1, 1);
+		BWRaster raster = new BWRasterMem(6, 5);
+		raster.enableFlipMode();
+		rect1.draw(raster);
+		rect2.draw(raster);
+		RasterView view = new SimpleRasterView();
+		view.produce(raster);
+		view.produce(raster);
+		System.out.println();
+		RasterView view2 = new SimpleRasterView('X', '_');
+		view2.produce(raster);
+	}
+	
+	@Test
+	public void Third() {
+		Rectangle rect1 = new Rectangle(0, 0, 4, 4);
+		Ellipse rect2 = new Ellipse(1, 1, 2,1);
+		BWRaster raster = new BWRasterMem(6, 5);
+		raster.enableFlipMode();
+		rect1.draw(raster);
+		rect2.draw(raster);
+		RasterView view = new SimpleRasterView();
+		view.produce(raster);
+		view.produce(raster);
+		System.out.println();
+		RasterView view2 = new SimpleRasterView('X', '_');
+		view2.produce(raster);
+	}
+	
+	
+	@Test
+	public void Forth() {
+		Rectangle rect1 = new Rectangle(0, 0, 4, 4);
+		Ellipse rect2 = new Ellipse(5, 5, 4,3);
+		BWRaster raster = new BWRasterMem(24, 24);
+		raster.enableFlipMode();
+		rect1.draw(raster);
+		rect2.draw(raster);
+		RasterView view = new SimpleRasterView();
+		view.produce(raster);
+		System.out.println();
+		RasterView view2 = new SimpleRasterView('X', '_');
+		view2.produce(raster);
+	}
+	
+	@Test
+	public void SquareDontAllowToBeBroken() {
+		BWRaster raster = new BWRasterMem(24, 24);
+		raster.enableFlipMode();
+		
+		RasterView view = new SimpleRasterView();
+		System.out.println("Empty raster!");
+		view.produce(raster);
+		
+		Rectangle rect = new Rectangle(0, 0, 4, 4);
+		rect.draw(raster);
+		
+		Rectangle rect1 = new Rectangle(0, 0, 4, 4);
+		Square square = new Square(5,5,3);
+		square.draw(raster);
+		
+		square.setHeight(6);
+		raster.clear();
+		square.draw(raster);
+		
+		square.setWidth(2);
+		square.draw(raster);
+
+		RasterView view = new SimpleRasterView();
+		view.produce(raster);
+		System.out.println();
+		RasterView view2 = new SimpleRasterView('X', '_');
+		view2.produce(raster);
+	}
+	
+	
+
+}

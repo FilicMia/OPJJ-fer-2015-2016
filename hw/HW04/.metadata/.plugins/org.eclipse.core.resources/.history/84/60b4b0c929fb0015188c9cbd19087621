@@ -1,0 +1,81 @@
+/**
+ * 
+ */
+package hr.fer.zemris.java.graphics.shapes;
+
+import hr.fer.zemris.java.graphics.raster.BWRaster;
+
+/**
+ * Implements the geometric shape ellipse. Each ellipse is specified by its
+ * center and horizontal and vertical radius. Circle is special form of ellipse.
+ * 
+ * @author Mia Filić
+ *
+ */
+public abstract class AbstractEllipse extends GeometricShape {
+	/** x coordinate of the ellipse center. */
+	int x;
+	/** y coordinate of the ellipse center. */
+	int y;
+	/** Horizontal radius. */
+	int rx;
+	/** Vertical radius. */
+	int ry;
+
+	/**
+	 * Constructor that sets the properties on given values.
+	 * 
+	 * @param x
+	 *            x coordinate of the ellipse center
+	 * @param y
+	 *            y coordinate of the ellipse center
+	 * @param rx
+	 *            Horizontal radius
+	 * @param ry
+	 *            Vertical radius
+	 */
+	public AbstractEllipse(int x, int y, int rx, int ry) {
+		super();
+		this.x = x;
+		this.y = y;
+		this.rx = rx;
+		this.ry = ry;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean containsPoint(int x, int y) {
+		int rySq = Math.multiplyExact(ry, ry);
+		int rxSq = Math.multiplyExact(rx, rx);
+		if (rySq * (x - this.x) * (x - this.x)
+				+ rxSq * (y - this.y) * (y - this.y) <= rySq * rxSq) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void draw(BWRaster r) {
+		int lowerBoundWidth = Math.max(0, x-rx);
+		int upperBoundWidth = (x + rx) > 0
+				? Math.min(x + rx, r.getWidth()) : 0;
+		int lowerBoundHeight = Math.max(0, y-ry);
+		int upperBoundHeight = (this.y + this.height) > 0
+				? Math.min(this.y + this.height, r.getHeigth()) : 0;
+		r.disableFlipMode();
+		for (int x = lowerBoundWidth; x < upperBoundWidth; ++x) {
+			for (int y = lowerBoundHeight; y < upperBoundHeight; ++y) {
+				if (containsPoint(x, y)) {
+					r.turnOn(x, y);
+				}
+
+			}
+		}
+	}
+
+}

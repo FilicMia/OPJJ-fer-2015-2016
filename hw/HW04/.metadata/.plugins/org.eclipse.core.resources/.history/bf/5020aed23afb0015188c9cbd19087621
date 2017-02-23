@@ -1,0 +1,47 @@
+package hr.fer.zemris.java.graphics.views;
+
+import java.util.Scanner;
+
+/**
+ * 
+ * @author mia
+ *
+ */
+public class Demo {
+	public static void main(String[] args) {
+		if (args.length > 2) {
+			System.err.println("There is no more than 2 arguments expected.");
+			System.exit(-1);
+		}
+		int width, height;
+		try {
+			width = Integer.parseInt(args[0]);
+			height = args.length == 2 ? Integer.parseInt(args[1]) : width;
+		} catch (NumberFormatException e) {
+			System.err.println("Integers are expected.");
+			System.exit(0);
+		}
+
+		createRaster(width, height);
+
+		handleInput();
+
+	}
+
+	private static void handleInput() {
+
+	}
+
+	/**
+	 * Supplementary method that cares about creating raster of specified
+	 * dimensions.
+	 * 
+	 * @param width
+	 *            width of raster
+	 * @param height
+	 *            height of raster
+	 */
+	private static void createRaster(int width, int height) {
+
+	}
+}

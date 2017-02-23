@@ -1,0 +1,29 @@
+package hr.fer.zemris.java.tecaj.hw5.db;
+
+/**
+ * 
+ * @author Mia FIlić
+ *
+ */
+public class ConditionalExpression {
+	/**Field getter.*/
+	private IFieldValueGetter fieldGetter;
+	
+	private IComparisonOperator operator;
+	
+	/**
+	 * Constructor. Sets the properties to given values.
+	 * 
+	 * @param getter
+	 *            value field getter
+	 * @param literal
+	 *            literal
+	 * @param operator
+	 *            instance of class implementing {@code IComparisonOperator}
+	 */
+	public ConditionalExpression(IFieldValueGetter getter, String literal,
+			IComparisonOperator operator) {
+		
+
+	}
+}

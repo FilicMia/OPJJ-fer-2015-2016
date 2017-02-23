@@ -1,0 +1,15 @@
+package hr.fer.zemris.java.graphics.raster;
+
+/**
+ * Interface for a raster device. This is an abstraction for all raster devices
+ * of fixed width and height for which each pixel can be painted with only two
+ * colors: black (when pixel is turned off) and white (when pixel is turned on)
+ * 
+ * @author Mia Filić
+ *
+ */
+public interface BWRaster {
+	
+	public int getWidth();
+
+}

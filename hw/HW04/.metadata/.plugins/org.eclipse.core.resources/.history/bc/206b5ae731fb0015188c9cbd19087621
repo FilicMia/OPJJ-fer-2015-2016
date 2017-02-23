@@ -1,0 +1,35 @@
+/**
+ * 
+ */
+package hr.fer.zemris.java.graphics.views;
+
+import hr.fer.zemris.java.graphics.raster.BWRaster;
+
+/**
+ * Class responsible for textual visualization of images on standard output.
+ * 
+ * @author Mia Filić
+ *
+ */
+public class SimpleRasterView implements RasterView {
+	/** Character that will be used to represent pixels that are turned on */
+	private char pixelsOn;
+	/** and which character will
+	be used to represent pixels that are turned off*/
+	private char pixelsOff;
+
+	/**
+	 * Outputs the textual representation of image to standard output and
+	 * returns null as result.
+	 * 
+	 * @param raster
+	 *            raster whose picture/image will produce
+	 * @return {@code null}
+	 */
+	@Override
+	public Object produce(BWRaster raster) {
+
+		return null;
+	}
+
+}

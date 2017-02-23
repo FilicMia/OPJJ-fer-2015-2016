@@ -1,0 +1,88 @@
+package hr.fer.zemris.java.tecaj.hw5.db;
+
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Scanner;
+
+import hr.fer.zemris.java.tecaj.hw5.collections.SimpleHashtable.TableEntry;
+import hr.fer.zemris.java.tecaj.hw5.db.filter.QueryFilter;
+
+/**
+ * Analyzes single query got from scaner.
+ * 
+ * @author Mia FIlić
+ *
+ */
+public class QueryAnalyzer {
+	/** Name of query command. */
+	public static final String QUERY = "query";
+	/** Name of indexquery command */
+	public static final String INDEXQUERY = "indexquery";
+
+	/** Sign used in strictly less than comparison. */
+	public static final String STRICTLYLESS_SIGN = "<";
+
+	/** Sign used in strictly greater than comparison. */
+	public static final String STRICTLYGREATER_SIGN = ">";
+
+	/** Sign used in less than comparison. */
+	public static final String LESS_SIGN = "<=";
+
+	/** Sign used in greater than comparison. */
+	public static final String GREATER_SIGN = ">=";
+
+	/** Sign used in equal comparison. */
+	public static final String EQUAL_SIGN = "=";
+
+	/** Sign used in not equal comparison. */
+	public static final String NOTEQUAL_SIGN = "!=";
+
+	/** Sign used in like comparison. */
+	public static final String LIKE = "LIKE";
+
+	/**
+	 * Analyzes the single query got from the standard input.
+	 * 
+	 * @param sc
+	 *            that scans the next query
+	 * @throws InputMismatchException
+	 *             if illegal command is read
+	 */
+	public static void queryAnallizer(Scanner sc, StudentDatabase database) {
+
+		String queryName = null;
+		String pattern = "[a-zA-Z]+";
+
+		if (sc.hasNext(pattern)) {
+			queryName = sc.next();
+		} else {
+			throw new IllegalArgumentException("Invalid input stream.");
+		}
+
+		StudentRecord record = null;
+		QueryFilter filter = null;
+
+		switch (queryName.toLowerCase().trim()) {
+		case (INDEXQUERY):
+			record = IndexQueryAnalyzer.indexQueryAnalyzer(sc.next(), database);
+			break;
+		case (QUERY):
+			filter = new QueryFilter(sc.next());
+			break;
+		default:
+			throw new InputMismatchException();
+		}
+
+		if (record == null && filter == null) {
+			System.out.println("Nothing to show.");
+		}
+		for (TableEntry<String, StudentRecord> entry : database){
+			if(filter.accepts(entry.getValue())){
+				//System.out.println(entry.getValue());
+			}
+		}
+
+			//System.out.println(record);
+	}
+
+}

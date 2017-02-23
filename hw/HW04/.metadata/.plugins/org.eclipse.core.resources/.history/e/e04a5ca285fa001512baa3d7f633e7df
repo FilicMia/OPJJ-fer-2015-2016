@@ -1,0 +1,36 @@
+package hr.fer.zemris.java.graphics.shapes;
+
+public class Rectangle extends GeometricShape{
+	/**x coordinate of the upper left corner of the rectangle*/
+	private int x;
+	/**y coordinate of the upper left corner of the rectangle*/
+	private int y;
+	/**Heigth of the rectangle.*/
+	private int heigth;
+	private int width;
+
+	public Rectangle(int x, int y, int heigth, int width) {
+		super();
+		this.x = x;
+		this.y = y;
+		this.heigth = heigth;
+		this.width = width;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean containsPoint(int x, int y) {
+		if (x < this.x)
+			return false;
+		if (y < this.y)
+			return false;
+		if (x >= this.x + this.width)
+			return false;
+		if (y >= this.y + this.heigth)
+			return false;
+		return true;
+	}
+
+}

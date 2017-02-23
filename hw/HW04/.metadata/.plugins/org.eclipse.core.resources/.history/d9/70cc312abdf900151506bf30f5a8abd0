@@ -1,0 +1,14 @@
+package hr.fer.zemris.java.cstr;
+
+public class Demo {
+
+	@SuppressWarnings("javadoc")
+	public static void main(String[] args) {
+		String data = "";
+		String str = new String(data);
+	//	System.out.println(str.charAt(0));
+		str = new String("aba\\bab").replaceAll(new String("\\\\"), new String("\\\\"));
+		System.out.println(str);
+	}
+
+}

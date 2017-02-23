@@ -1,0 +1,652 @@
+/**
+ * 
+ */
+package hr.fer.zemris.java.tecaj.hw5.collections;
+
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+/**
+ * Generic hash table collection which allows storage of ordered pairs ( key ,
+ * value ). Type of parameter key is defined by K, type of parameter value is
+ * defined with V.
+ * 
+ * This implementation is in accordance with the overflow policy in concatenated
+ * list . Therefore, the number of ordered pairs ( key , value ) that are stored
+ * in this collection can be greater than the number of slots table. The
+ * implementation of this class does not allow keys to be null references ;
+ * values ​​, however, can be a null reference .
+ * 
+ * For purposes of calculating the slot in which to insert a pair is used the
+ * method {@code hashCode ( ) } on key property, and modulo table size .
+ * 
+ * @author Mia Filić
+ * @version 1.0
+ * 
+ * @param <K>
+ *            type of key value of ordered pair
+ * @param <V>
+ *            type of value value of ordered pair
+ */
+public class SimpleHashtable<K, V>
+		implements Iterable<SimpleHashtable.TableEntry<K, V>> {
+	/** Default number of slots in {@link SimpleHashtable} . */
+	private static final int DEFAULT_SLOTS = 16;
+
+	/**
+	 * Private static constant used in constructor for defining number of slots.
+	 */
+	private static final int TWO = 2;
+
+	/**
+	 * Used to separate pairs in string representation of the hash table
+	 * collection.
+	 */
+	private static final String DELIMITER = ", ";
+
+	/**
+	 * Begin of the string representation of the collection.
+	 */
+	private static final String BEGIN = "\"[";
+
+	/**
+	 * End of the string representation of the collection.
+	 */
+	private static final String END = "]\"";
+
+	/**
+	 * Percentage of occupancy when to reallocate hash table and make it
+	 * bigger(2 times bigger).
+	 */
+	private static final double REALLOCATION_TIME = 0.75;
+
+	/** Array of slots of the hash table */
+	private TableEntry<K, V> table[];
+	/** Number of currently stored pairs <key, value> */
+	private int size = 0;
+
+	/**
+	 * Indicates if the modification (after creation of the collection) has been
+	 * done. Methods that changes the collection sets the indicator value to
+	 * {@code true}. When
+	 */
+	private long modificationCount = 0;
+
+	/**
+	 * Constructor which creates hash table with number of slots equal to the
+	 * closest power of {@link TWO} greater or equal to {@code capacity}.
+	 * 
+	 * @param capacity
+	 *            number of desirable number of slots in hash table.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if parametar {@code capacity} is smaller than 1.
+	 */
+	@SuppressWarnings("unchecked")
+	public SimpleHashtable(int capacity) {
+		if (capacity < 1) {
+			throw new IllegalArgumentException(
+					"Number of slots must be grater than one.");
+		}
+		int tableSize = (int) Math.ceil(Math.log(capacity) / Math.log(TWO));
+		tableSize = (int) Math.pow(TWO, tableSize);
+
+		table = (TableEntry<K, V>[]) new TableEntry[tableSize];
+
+	}
+
+	/**
+	 * Default constructor which creates hash table with default number of slots
+	 * ({@code DEFAULT_SLOTS}).
+	 */
+	public SimpleHashtable() {
+		this(DEFAULT_SLOTS);
+	}
+
+	/**
+	 * Implementation of the slot of the hash table. One slot is considered to
+	 * be linked list of instances of {@code TableEntry}
+	 * 
+	 * @author Mia Filić
+	 *
+	 * @param <K>
+	 *            type of key value of ordered pair
+	 * @param <V>
+	 *            type of value value of ordered pair
+	 */
+	public static class TableEntry<K, V> {
+		// <K,V> are not the samo as the K,V in wrapped class
+		/**
+		 * The key of ordered pair.
+		 */
+		private K key;
+
+		/**
+		 * The value {@code value} of ordered pair.
+		 */
+		private V value;
+
+		/** Pointer to the next {@code TableEntry} instance in the same slot. */
+		private TableEntry<K, V> next;
+
+		/**
+		 * Constructor. It sets the (key,value) pair represented by this on
+		 * value passed as arguments. Key value can not be {@code null}.
+		 * 
+		 * @param key
+		 *            value on which to set {@code key}
+		 * @param value
+		 *            value on which to set {@code value}
+		 * @param next
+		 *            {@code TableEntry} object on which to set {@code next}
+		 *            property.
+		 */
+		public TableEntry(K key, V value, TableEntry<K, V> next) {
+			if (key == null) {
+				throw new IllegalArgumentException(
+						"Key value can not be null.");
+			}
+
+			this.key = key;
+			this.value = value;
+			this.next = next;
+
+		}
+
+		/**
+		 * Returns the {@code value} property.
+		 * 
+		 * @return value of {@code value} property
+		 */
+		public V getValue() {
+			return value;
+		}
+
+		/**
+		 * Sets the {@code value} property. It can be {@code null}.
+		 * 
+		 * @param value
+		 *            on which to set {@code value} property
+		 */
+		public void setValue(V value) {
+			this.value = value;
+		}
+
+		/**
+		 * Returns the {@code key} property.
+		 * 
+		 * @return key value
+		 */
+		public K getKey() {
+			return key;
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			sb.append("(").append(key.toString()).append(", ")
+					.append(value.toString()).append(")");
+			return sb.toString();
+		}
+
+	}
+
+	/**
+	 * Puts the given pair ( key, value ) to the hash table. If a pair with the
+	 * same key already existed, the value of that specific element is changed
+	 * to {@code value}.
+	 * 
+	 * @param key
+	 *            key value of the pair
+	 * @param value
+	 *            value value of the pair
+	 * @throws IllegalArgumentException
+	 *             if value of {@code key} is {@code null}
+	 */
+	public void put(K key, V value) {
+		if (key == null) {
+			throw new IllegalArgumentException("Property key can not be null.");
+		}
+
+		int hash = hash(key);
+		TableEntry<K, V> curr = table[hash];
+
+		// first in this slot
+		if (curr == null) {
+			if ((double) (size + 1)
+					/ (double) table.length > REALLOCATION_TIME) {
+				reallocate();
+				put(key, value);
+				return;
+			}
+			table[hash] = new TableEntry<K, V>(key, value, null);
+			++size;
+			// modificationCount
+			++modificationCount;
+			return;
+		}
+
+		// we want that curr = last node in the slot
+		while (curr != null && curr.next != null) {
+			if (curr.getKey().equals(key)) {
+				if (curr.getValue() == null || !curr.getValue().equals(value)) {
+					curr.setValue(value);
+				}
+
+				return;
+			}
+
+			curr = curr.next;
+		}
+
+		if (curr.getKey().equals(key)) {
+			if (curr.getValue() == null || !curr.getValue().equals(value)) {
+				curr.setValue(value);
+			}
+
+			return;
+		}
+
+		// the key doesn't exist, so create it
+		// maybe we need to reallocate??
+		if ((double) (size + 1) / (double) table.length > REALLOCATION_TIME) {
+			reallocate();
+			// this time the reallocation isn called so endless recursion wont
+			// happen
+			put(key, value);
+			return;
+		}
+		curr.next = new TableEntry<K, V>(key, value, null);
+		++size;
+		// modification count
+		++modificationCount;
+
+	}
+
+	/**
+	 * Finds and returns the value part of the pair (key, value). Key is
+	 * specified with {@code key}. If given key does not exist in hash table,
+	 * method returns {@code null}.
+	 * 
+	 * @param key
+	 *            the key part of the pair (key, value) whose value will be
+	 *            returned, here is legal to pass {@code null}.
+	 * @return value paired with key value {@code key}, {@code null} if no such
+	 *         key exists.
+	 */
+	public V get(Object key) {
+		TableEntry<K, V> found = findPair(key);
+
+		return (found != null) ? found.value : null;
+	}
+
+	/**
+	 * Returns the number of currently stored pairs in hash table.
+	 * 
+	 * @return number of currently stored pairs in hash table.
+	 * 
+	 */
+	public int size() {
+		return size;
+	}
+
+	/**
+	 * Checks if has table contains pair with given key property. If
+	 * {@code size} of hash table is smaller than number of slots in hash table
+	 * and that hash function is good implemented, this method has complexity
+	 * O(1).
+	 * 
+	 * @param key
+	 *            key property of pair (key, value) to be check for existence.
+	 * @return {@code true} if pair exists, {@code false} otherwise.
+	 */
+	public boolean containsKey(Object key) {
+		TableEntry<K, V> found = findPair(key);
+
+		return (found != null) ? true : false;
+	}
+
+	/**
+	 * Checks if has table contains pair with given value property. If
+	 * {@code size} of hash table is smaller than number of slots in hash table
+	 * and that hash function is good implemented, this method has complexity
+	 * O(NUMBER_OF_SLOTS).
+	 * 
+	 * @param value
+	 *            value property of pair (key, value) to be check for existence.
+	 * @return {@code true} if pair exists, {@code false} otherwise.
+	 */
+	public boolean containsValue(Object value) {
+		for (TableEntry<K, V> iter : table) {
+			TableEntry<K, V> curr = iter;
+
+			// first in this slot
+			if (curr == null) {
+				return false;
+			}
+
+			while (curr != null) {
+				if (curr.getValue().equals(value)) {
+					return true;
+				}
+
+				curr = curr.next;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Removes pair specified by its key value from the hash table.
+	 * 
+	 * @param key
+	 *            property of pair (key, value ) that should be removed;
+	 *            {@code null} is allowed
+	 */
+	public void remove(Object key) {
+		if (!containsKey(key)) {
+			return;
+		}
+		int hash = hash(key);
+		TableEntry<K, V> node = table[hash];
+
+		if (node.getKey().equals(key)) {
+			table[hash] = node.next;
+			--size;
+			// change modification Count
+			++modificationCount;
+			return;
+		}
+
+		while (node.next != null) {
+			if (node.next.getKey().equals(key)) {
+
+				TableEntry<K, V> tmp = node.next.next;
+				node.next.next = null;
+				node.next = tmp;
+
+				--size;
+				++modificationCount;
+				return;
+			}
+
+			node = node.next;
+		}
+
+	}
+
+	/**
+	 * Checks if hash table is empty.
+	 * 
+	 * @return {@code true} if hash table is empty, {@code false} otherwise
+	 */
+	public boolean isEmpty() {
+		if (size() == 0)
+			return true;
+
+		return false;
+	}
+
+	/**
+	 * Deletes all ordered pairs stored in hash table collection. It does not
+	 * change the capacity of the collection.
+	 */
+	public void clear() {
+		if (isEmpty()) {
+			return;
+		}
+
+		for (int slot = 0; slot < table.length; ++slot) {
+			TableEntry<K, V> curr = table[slot];
+
+			while (curr != null) {
+				K key = curr.getKey();
+				curr = curr.next;
+				remove(key);
+			}
+		}
+
+		// modificationCount
+		++modificationCount;
+	}
+
+	/**
+	 * List of ordered pairs that are stored in collection. They are listed in
+	 * the order they are hashed in the table from first slot up to the least,
+	 * from first node in the slot list up to the least.
+	 * 
+	 */
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(BEGIN);
+
+		for (TableEntry<K, V> iter : this) {
+			sb.append((iter).getKey().toString()).append("=")
+					.append((((TableEntry<K, V>) iter).getValue().toString()));
+			sb.append(DELIMITER);
+		}
+		sb.replace(sb.lastIndexOf(DELIMITER), sb.lastIndexOf(DELIMITER), END);
+		return sb.toString();
+	}
+
+	/**
+	 * Supplementary method that finds the pair (key, value) and returns it.
+	 * 
+	 * @param key
+	 *            of the pair (key, value) that should be found
+	 * @return found pair (key, value) with specified key, {@code null} if such
+	 *         key does not exists
+	 */
+	private TableEntry<K, V> findPair(Object key) {
+		if (key == null) {
+			return null;
+		}
+
+		int hash = hash(key);
+		TableEntry<K, V> curr = table[hash];
+
+		// first in this slot
+		if (curr == null) {
+			return null;
+		}
+
+		while (curr != null) {
+			if (curr.getKey().equals(key)) {
+				return curr;
+			}
+
+			curr = curr.next;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Supplementary method that hashes the key due to given formula:
+	 * 
+	 * hash = key.key.hashCode() % table.length;
+	 * 
+	 * @param key
+	 *            to be hashed
+	 * @return the hash of given key
+	 */
+	private int hash(Object key) {
+		return Math.abs(key.hashCode()) % table.length;
+	}
+
+	/**
+	 * Creates and returns the begin iterator of the collection.
+	 * 
+	 * @return begin iterator on this
+	 */
+	@Override
+	public SimpleHashtable<K, V>.IteratorImpl iterator() {
+
+		return new IteratorImpl();
+	}
+
+	/////////////////////////////////////// Iterator////////////////////
+	/**
+	 * Implements the iterator trough the hash table iterator.
+	 */
+	private class IteratorImpl implements Iterator<TableEntry<K, V>> {
+
+		/** Current element in iterator. */
+		private TableEntry<K, V> current;
+
+		/** Current element in iterator. */
+		private TableEntry<K, V> lastReturned;
+
+		/** Remembers the slot from which {@code current} is. */
+		private int currSlot;
+
+		/** Indicates if the remove method can or cannot be called. */
+		private boolean allowedToCallRemove = false;
+
+		/**
+		 * Remembers the allowed modificationCount in the
+		 * {@code SimpleHashtable} that its iterates.
+		 */
+		private long myModificationCout;
+
+		{
+			myModificationCout = SimpleHashtable.this.modificationCount;
+			for (currSlot = 0; currSlot < table.length; ++currSlot) {
+				if (table[currSlot] != null) {
+					current = table[currSlot];
+					break;
+				}
+			}
+
+		}
+
+		/**
+		 * Checks if the end of collection is reached. Additionally, it stores
+		 * the found element that is evidence of not reaching the end of
+		 * collection in property {@code next}.
+		 * 
+		 * @return {@code true} if element after {@code current} exists,
+		 *         {@code false} otherwise.
+		 * 
+		 * @throws ConcurrentModificationException
+		 *             if the collection was changed without calling iterator
+		 *             methods (e.g. remove())
+		 */
+		@Override
+		public boolean hasNext() {
+
+			if (SimpleHashtable.this.modificationCount != myModificationCout) {
+				throw new ConcurrentModificationException(
+						"Collection has been changed without iterator.");
+			}
+
+			if (current != null) {
+				return true;
+			}
+			return false;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * 
+		 * @throws ConcurrentModificationException
+		 *             if the collection was changed without calling iterator
+		 *             methods (e.g. remove())
+		 */
+		@Override
+		public TableEntry<K, V> next() {
+			if (!hasNext()) {
+				throw new NoSuchElementException("End is reached.");
+			}
+
+			if (SimpleHashtable.this.modificationCount != myModificationCout) {
+				throw new ConcurrentModificationException(
+						"Collection has been changed without iterator.");
+			}
+
+			TableEntry<K, V> ret = current;
+
+			if (current.next != null) {
+				current = current.next;
+			} else {
+				for (int index = currSlot + 1; index < table.length; ++index) {
+					if (table[index] != null) {
+						current = table[index];
+						currSlot = index;
+
+						allowedToCallRemove = true;
+						lastReturned = ret;
+						return lastReturned;
+					}
+
+				}
+				current = null;
+				currSlot = table.length;
+			}
+
+			allowedToCallRemove = true;
+			lastReturned = ret;
+			return lastReturned;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * 
+		 * @throws ConcurrentModificationException
+		 *             if the collection was changed without calling iterator
+		 *             methods (e.g. remove())
+		 */
+		@Override
+		public void remove() {
+			if (!allowedToCallRemove) {
+				throw new IllegalStateException(
+						"Remove method can not be called at this point.");
+			}
+
+			if (SimpleHashtable.this.modificationCount != myModificationCout) {
+				throw new ConcurrentModificationException(
+						"Collection has been changed without iterator.");
+			}
+
+			allowedToCallRemove = false;
+			SimpleHashtable.this.remove(lastReturned.getKey());
+			// if remove removes it and changes the modificationCount
+			if (modificationCount == myModificationCout + 1) {
+				++myModificationCout;
+			}
+		}
+
+	}
+	///////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Supplementary method that reallocates hash table and increse the capacity
+	 * by factor 2.
+	 */
+	private void reallocate() {
+		TableEntry<K, V> tmpTable[] = table;
+		table = (TableEntry<K, V>[]) new TableEntry[TWO * tmpTable.length];
+		size = 0;
+		for (int slot = 0; slot < tmpTable.length; ++slot) {
+			TableEntry<K, V> curr = tmpTable[slot];
+
+			while (curr != null) {
+				K key = curr.getKey();
+				V value = curr.getValue();
+
+				put(key, value);
+
+				TableEntry<K, V> next = curr.next;
+				curr.next = null;
+				curr = next;
+
+			}
+
+			tmpTable[slot] = null;
+		}
+
+	}
+
+}

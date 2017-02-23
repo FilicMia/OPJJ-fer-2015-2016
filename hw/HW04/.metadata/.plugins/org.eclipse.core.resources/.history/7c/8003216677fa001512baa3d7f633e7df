@@ -1,0 +1,41 @@
+package hr.fer.zemris.java.graphics.raster;
+
+/**
+ * Interface for a raster device. This is an abstraction for all raster devices
+ * of fixed width and height for which each pixel can be painted with only two
+ * colors: black (when pixel is turned off) and white (when pixel is turned on)
+ * 
+ * @author Mia Filić
+ *
+ */
+public interface BWRaster {
+
+	/**
+	 * Method that returns the appropriate dimension of used rasted.
+	 * 
+	 * @return width of used raster
+	 */
+	public int getWidth();
+
+	/**
+	 * Method that returns the appropriate dimension of used rasted.
+	 * 
+	 * @return high of used raster
+	 */
+	public int getHigh();
+
+	/**
+	 * Method clear turns off all pixels in raster.
+	 */
+	public void clear();
+
+	/**
+	 * Methods turnOn/turnOff should turn pixel on/turn pixel off, at the
+	 * specified location. Methods turnOn, turnOff and isTurnedOn should throw
+	 * IllegalArgumentException if (x,y) is invalid with respect to raster
+	 * dimensions. The coordinate system for raster has (0,0) at the top-left
+	 * corner of raster; positive x-axis is to the right and positive y-axis is
+	 * toward the bottom.
+	 */
+	public void turnOn(int x, int y);
+}

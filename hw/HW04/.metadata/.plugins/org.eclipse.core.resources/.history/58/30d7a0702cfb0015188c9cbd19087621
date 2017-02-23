@@ -1,0 +1,27 @@
+/**
+ * 
+ */
+package hr.fer.zemris.java.graphics.shapes;
+
+/**
+ * @author mia
+ *
+ */
+public class Circle extends AbstractEllipse{
+	
+	/**
+	 * Constructor that sets the properties on given values.
+	 * 
+	 * @param x
+	 *            x coordinate of the ellipse center
+	 * @param y
+	 *            y coordinate of the ellipse center
+	 * @param rx
+	 *            Horizontal radius
+	 * @param ry
+	 *            Vertical radius
+	 */
+	public Circle(int x, int y, int r) {
+		super(x, y, r, r);
+	}
+}

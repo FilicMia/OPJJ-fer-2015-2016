@@ -1,0 +1,155 @@
+package hr.fer.zemris.java.tecaj.hw5.db.test;
+
+import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Scanner;
+
+import org.junit.Test;
+
+import hr.fer.zemris.java.tecaj.hw5.collections.SimpleHashtable.TableEntry;
+import hr.fer.zemris.java.tecaj.hw5.db.IndexQueryAnalyzer;
+import hr.fer.zemris.java.tecaj.hw5.db.QueryAnalyzer;
+import hr.fer.zemris.java.tecaj.hw5.db.StudentDB;
+import hr.fer.zemris.java.tecaj.hw5.db.StudentDatabase;
+import hr.fer.zemris.java.tecaj.hw5.db.StudentRecord;
+import hr.fer.zemris.java.tecaj.hw5.db.filter.QueryFilter;
+import hr.fer.zemris.java.tecaj.hw5.views.StringView;
+import hr.fer.zemris.java.tecaj.hw5.views.View;
+
+@SuppressWarnings("javadoc")
+public class StudentDatabaseTest {
+
+	@Test
+	public void testQuery1() throws IOException {
+		List<String> lines = Files.readAllLines(Paths.get("database.txt"),
+				StandardCharsets.UTF_8);
+
+		StudentDatabase studentDB = new StudentDatabase(lines);
+		String query = "indexquery jmbag=\"0000000003\"";
+		String queryName = "indexquery";
+		List<StudentRecord> records = new ArrayList<StudentRecord>();
+		records = processInputQuery(queryName, query, studentDB, records);
+		
+		assertEquals(records.get(0).getLastName(), "Bosnić");
+	}
+
+	@Test
+	public void testQuery2() throws IOException {
+		List<String> lines = Files.readAllLines(Paths.get("database.txt"),
+				StandardCharsets.UTF_8);
+
+		StudentDatabase studentDB = new StudentDatabase(lines);
+		String query = "firstName>\"A\" and firstName<\"C\" lastName LIKE \"B*ć\"";
+		String queryName = "query";
+		List<StudentRecord> records = new ArrayList<StudentRecord>();
+		records = processInputQuery(queryName, query, studentDB, records);
+		//assertEquals(records.get(1).getLastName(), "Jakobušić");
+	}
+
+	@Test
+	public void testQuery3() throws IOException {
+		List<String> lines = Files.readAllLines(Paths.get("database.txt"),
+				StandardCharsets.UTF_8);
+
+		StudentDatabase studentDB = new StudentDatabase(lines);
+		String query = "lastName LIKE \"Be*\"";
+		String queryName = "query";
+		List<StudentRecord> records = new ArrayList<StudentRecord>();
+		processInputQuery(queryName, query, studentDB, records);
+		assertEquals(records.size(), 0);
+	}
+
+	@Test
+	public void testQuery4() throws IOException {
+		List<String> lines = Files.readAllLines(Paths.get("database.txt"),
+				StandardCharsets.UTF_8);
+
+		StudentDatabase studentDB = new StudentDatabase(lines);
+		String query = "lastName =     \"Blažić\"";
+		String queryName = "query";
+		List<StudentRecord> records = new ArrayList<StudentRecord>();
+		processInputQuery(queryName, query, studentDB, records);
+		assertEquals(records.size(), 0);
+	}
+
+	@Test
+	public void testQuery5() throws IOException {
+		List<String> lines = Files.readAllLines(Paths.get("database.txt"),
+				StandardCharsets.UTF_8);
+
+		StudentDatabase studentDB = new StudentDatabase(lines);
+		String query = "firstName>\"A\" and lastName LIKE \"B*ć\"";
+		List<StudentRecord> records = new ArrayList<StudentRecord>();
+		records = processInputQuery("query", query, studentDB, records);
+		assertEquals(records.get(0).getLastName(), "Bakamović");
+		assertEquals(records.get(3).getLastName(), "Brezović");
+	}
+
+	List<StudentRecord> processInputQuery(String queryName, String queryLine,
+			StudentDatabase base, List<StudentRecord> records) {
+
+		QueryFilter exp = null;
+		View view = new StringView();
+		Scanner sc = new Scanner(System.in);
+		List<String> addThatSatisfies = new ArrayList<>();
+		StudentRecord record = null;
+
+		switch (queryName.toLowerCase().trim()) {
+		case (QueryAnalyzer.INDEXQUERY):
+			try {
+				record = IndexQueryAnalyzer.indexQueryAnalyzer(queryLine, base);
+			} catch (InputMismatchException e) {
+
+				break;
+			}
+
+			if (record != null) {
+				records.add(record);
+			}
+			break;
+		case (QueryAnalyzer.QUERY):
+			try {
+				exp = new QueryFilter(queryLine);
+			} catch (InputMismatchException e) {
+
+				break;
+			}
+			for (TableEntry<String, StudentRecord> data : base) {
+				if (exp.accepts(data.getValue())) {
+					// System.out.println(data.getValue().toString());
+					addThatSatisfies.add(data.getValue().toString());
+					records.add(data.getValue());
+				}
+			}
+
+			break;
+		case (StudentDB.EXIT):
+			break;
+		default:
+
+			StudentDB.invalidQueryHandler(sc);
+		}
+
+		if (queryName.toLowerCase().equals(StudentDB.EXIT)) {
+			System.out.println("Goodbye!");
+
+		}
+
+		if (records.size() > 0) {
+			String str = view.produce(records);
+			System.out.println(str);
+		}
+		if (exp != null || record != null) {
+			System.out.println("Records: " + records.size());
+		}
+
+		return records;
+	}
+}

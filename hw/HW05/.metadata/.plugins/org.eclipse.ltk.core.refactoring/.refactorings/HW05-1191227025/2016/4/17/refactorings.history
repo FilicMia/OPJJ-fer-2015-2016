@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename package &apos;database.hr.fer.zemris.java.tecaj.hw5.db.test&apos; to &apos;hr.fer.zemris.java.tecaj.hw5.db.test&apos;&#x0A;- Original project: &apos;HW05-1191227025&apos;&#x0A;- Original element: &apos;HW05-1191227025/tests/database.hr.fer.zemris.java.tecaj.hw5.db.test&apos;&#x0A;- Renamed element: &apos;HW05-1191227025/tests/hr.fer.zemris.java.tecaj.hw5.db.test&apos;&#x0A;- Update references to refactored element&#x0A;- Update textual occurrences in comments and strings" description="Rename package &apos;database.hr.fer.zemris.java.tecaj.hw5.db.test&apos;" flags="589830" hierarchical="false" id="org.eclipse.jdt.ui.rename.package" input="/tests&lt;database.hr.fer.zemris.java.tecaj.hw5.db.test" name="hr.fer.zemris.java.tecaj.hw5.db.test" qualified="false" references="true" stamp="1461052778947" textual="false" version="1.0"/>
+</session>

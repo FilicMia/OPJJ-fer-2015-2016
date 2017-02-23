@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MathLand</string>
+    <string name="action_settings">Settings</string>
+    <string name="minus">Oduzimanja</string>
+    <string name="plus">Zbrajanje</string>
+    <string name="div">Dijeljenje</string>
+    <string name="mul">Množenje</string>
+</resources>

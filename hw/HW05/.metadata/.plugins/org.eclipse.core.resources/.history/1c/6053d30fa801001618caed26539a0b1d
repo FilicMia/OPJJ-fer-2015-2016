@@ -1,0 +1,54 @@
+package hr.fer.zemris.java.tecaj.hw5.db;
+
+/** Constants used in query analyze. Name of queries. Value of operators. */
+public enum QueryAnalyzerConstants {
+	/** Name of query command. */
+	QUERY("query"),
+	/** Name of indexquery command */
+	INDEXQUERY("indexquery"),
+
+	/** Sign used in strictly less than comparison. */
+	STRICTLYLESS_SIGN("<"),
+
+	/** Sign used in strictly greater than comparison. */
+	STRICTLYGREATER_SIGN(">"),
+
+	/** Sign used in less than comparison. */
+	LESS_SIGN("<="),
+
+	/** Sign used in greater than comparison. */
+	GREATER_SIGN(">="),
+
+	/** Sign used in equal comparison. */
+	EQUAL_SIGN("="),
+
+	/** Sign used in not equal comparison. */
+	NOTEQUAL_SIGN("!="),
+
+	/** Sign used in like comparison. */
+	LIKE("LIKE");
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param value
+	 *            constant's value.
+	 */
+	private QueryAnalyzerConstants(String value) {
+		this.value = value;
+	}
+
+	/**
+	 * The value of this constant.
+	 */
+	private final String value;
+
+	/**
+	 * Getter for value.
+	 *
+	 * @return value of this constant
+	 */
+	public String getValue() {
+		return value;
+	}
+}

@@ -1,0 +1,65 @@
+package hr.fer.zemris.java.graphics.views;
+
+import java.util.Scanner;
+
+import hr.fer.zemris.java.graphics.raster.BWRaster;
+import hr.fer.zemris.java.graphics.raster.BWRasterMem;
+import hr.fer.zemris.java.graphics.shapes.GeometricShape;
+
+/**
+ * 
+ * @author mia
+ *
+ */
+public class Demo {
+	public static void main(String[] args) {
+		if (args.length > 2) {
+			System.err.println("There is no more than 2 arguments expected.");
+			System.exit(-1);
+		}
+		int width = 0, height = 0;
+		try {
+			width = Integer.parseInt(args[0]);
+			height = args.length == 2 ? Integer.parseInt(args[1]) : width;
+		} catch (NumberFormatException e) {
+			System.err.println("Integers are expected.");
+			System.exit(0);
+		}
+
+		BWRaster raster = createRaster(width, height);
+		GeometricShape[] shapes = null;
+		try {
+			shapes = UserInputHandler.handleInput();
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+		
+		RanderShapes.randerFromArrayToStdout(raster, shapes);
+		
+
+	}
+
+	/**
+	 * Supplementary method that cares about creating raster of specified
+	 * dimensions.
+	 * 
+	 * @param width
+	 *            width of raster
+	 * @param height
+	 *            height of raster
+	 */
+	private static BWRaster createRaster(int width, int height) {
+		BWRaster raster = null;
+		try {
+			raster = new BWRasterMem(width, height);
+
+		} catch (IllegalArgumentException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+
+		return raster;
+	}
+	
+}

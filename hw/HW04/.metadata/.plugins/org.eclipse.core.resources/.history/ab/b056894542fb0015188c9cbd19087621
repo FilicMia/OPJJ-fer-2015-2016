@@ -1,0 +1,19 @@
+package hr.fer.zemris.java.graphics.shapes;
+
+/**
+ * List of all geometric shapes currently created.
+ * 
+ * @author Mia Filić
+ *
+ */
+public enum GeometricShapeType {
+	/**Rectangle geometric shape.*/
+	 RECTANGLE,
+	 /**Square geometric shape.*/
+	 SQUARE,
+	 /**Ellipse geometric shape.*/
+	 ELLIPSE,
+	 /**Circle geometric shape.*/
+	 CIRCLE
+	
+}

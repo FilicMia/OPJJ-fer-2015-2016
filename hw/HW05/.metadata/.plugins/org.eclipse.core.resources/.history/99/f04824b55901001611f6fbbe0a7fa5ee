@@ -1,0 +1,32 @@
+package hr.fer.zemris.java.tecaj.hw5.db;
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class Test {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+
+		String queryName = null;
+		String pattern = "[a-zA-Z]+";
+
+		if (sc.hasNext(pattern)) {
+			queryName = sc.next(pattern);
+		} else {
+			throw new IllegalArgumentException("Invalid input stream.");
+		}
+
+		switch (queryName.toLowerCase()) {
+		case (QueryAnalyzer.INDEXQUERY):
+
+			break;
+		case (QueryAnalyzer.QUERY):
+
+			break;
+		default:
+			throw new InputMismatchException();
+		}
+	}
+
+}

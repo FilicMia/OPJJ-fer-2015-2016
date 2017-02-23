@@ -1,0 +1,16 @@
+load r7, @int1 ; ucitaj poruku u r7
+			load r6, @int2 ; ucitaj poruku u r6
+			add r7,r7,r6	;pomnozi
+			echo r7 ; ispisi na konzolu poruku
+			decrement r7
+			jumpIfTrue 9
+			increment r7
+			increment r7
+			increment r7
+			move r5, [r6+11]
+			echo r5
+			halt ; zaustavi procesor
+		
+@int1: 	DEFINT 1
+@int2: 	DEFINT 3
+@newline: DEFSTR "\n"

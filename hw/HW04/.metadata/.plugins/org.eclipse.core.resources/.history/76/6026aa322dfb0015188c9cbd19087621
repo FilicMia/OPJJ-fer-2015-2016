@@ -1,0 +1,14 @@
+/**
+ * 
+ */
+package hr.fer.zemris.java.graphics.views;
+
+/**
+ * @author mia
+ *
+ */
+public interface RasterView {
+	
+	
+
+}

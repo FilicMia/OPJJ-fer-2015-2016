@@ -1,0 +1,23 @@
+/**
+ * 
+ */
+package hr.fer.zemris.java.graphics.views;
+
+import hr.fer.zemris.java.graphics.raster.BWRaster;
+
+/**
+ *Interface for classes that are responsible for visualization
+ * of created images.
+ * 
+ * @author mia
+ *
+ */
+public interface RasterView {
+
+	/**
+	 * @param raster
+	 * @return
+	 */
+	public Object produce(BWRaster raster);
+
+}

@@ -1,0 +1,12 @@
+/**
+ * 
+ */
+package hr.fer.zemris.java.tecaj.hw5.collections;
+
+/**
+ * @author Mia Filić
+ * @version 1.0
+ */
+public class SimpleHashtable<K,V> {
+	
+}

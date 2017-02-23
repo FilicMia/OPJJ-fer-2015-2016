@@ -1,0 +1,17 @@
+/**
+ * 
+ */
+
+/**
+ * The implementation of class String which offers similar functionality as the
+ * old JAVA official implementation of the String class. String instances don't
+ * allow users to change current data. That is the main reason why the substring
+ * operations can be performed in O(1) complexity. Multiple instances of strings
+ * 
+ * @author Mia FIlić
+ * @version 1.0
+ *
+ */
+public class CString {
+
+}

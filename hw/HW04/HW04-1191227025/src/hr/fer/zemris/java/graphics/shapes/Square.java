@@ -1,0 +1,70 @@
+package hr.fer.zemris.java.graphics.shapes;
+
+/**
+ * Implements the geometric shape square. Each square is specified by its upper
+ * left corner and its size(length of each side).
+ * 
+ * @author Mia Filić
+ *
+ */
+public class Square extends AbstaractRectangle {
+	/** String representation of the name of this geometric shape. */
+	public static final String name = "SQUARE";
+	
+	/**
+	 * Number of parameters that each {@code Square} holds and if fully determined by
+	 * them.
+	 */
+	public static final int noParam = 3;
+	
+	/**
+	 * Constructor. It sets properties of this square to its initial values.
+	 * 
+	 * @param x
+	 *            x coordinate of the upper left corner
+	 * @param y
+	 *            y coordinate of the upper left corner
+	 * @param size
+	 *            Size of the each side of square
+	 */
+	public Square(int x, int y, int size) {
+		super(x, y, size, size);
+	}
+
+	/**
+	 * Returns the size of each side of the rectangle.
+	 * 
+	 * @return size of rectangle
+	 */
+	public int getSize() {
+		return super.getHeight();
+	}
+	
+	/**
+	 * Sets the size (of each side) of the rectangle.
+	 * 
+	 * @param size size of rectangle
+	 */
+	public void setSize(int size) {
+		setHeight(size);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setHeight(int height) {
+		super.setHeight(height);
+		super.setWidth(height);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setWidth(int width) {
+		super.setWidth(width);
+		super.setHeight(width);
+	}
+
+}

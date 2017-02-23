@@ -1,0 +1,65 @@
+/**
+ * 
+ */
+package hr.fer.zemris.java.tecaj.hw5.collections;
+
+/**
+ * Generic hash table which allows which allows storage of ordered pairs ( key ,
+ * value ). Type of parameter key is defined by K, type of parameter value is
+ * defined with V.
+ * 
+ * This implementation is in accordance with the overflow policy in concatenated
+ * list . Therefore, the number of ordered pairs ( key , value ) that are stored
+ * in this collection can be greater than the number of slots table. The
+ * implementation of this class does not allow keys to be null references ;
+ * values ​​, however, can be a null reference .
+ * 
+ * @author Mia Filić
+ * @version 1.0
+ */
+public class SimpleHashtable<K, V> {
+	/** Default number of slots in {@code SimpleHashtable} . */
+	private static final int DEFAULTSLOTS = 16;
+
+	/** Array of slots of the hash table */
+	TableEntry<K, V> table[];
+	/** Number of currently stored pairs <key, value> */
+	int size = 0;
+
+	public static class TableEntry<K, V> {
+		// <K,V> are not the samo as the K,V in wrapped class
+
+	}
+
+	/**
+	 * Constructor which creates hash table with {@code size} number of slots.
+	 * 
+	 * @param slots
+	 *            number of slots in hash table.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if {@code size} is smaller than 1.
+	 */
+	public SimpleHashtable(int slots) {
+		if (size < 1) {
+			throw new IllegalArgumentException(
+					"Number of slots must be grater than one.");
+		}
+		table = (TableEntry<K, V>[]) new TableEntry[size];
+
+	}
+
+	/**
+	 * Default constructor which creates hash table with default number of slots
+	 * ({@code noSlots}).
+	 */
+	public SimpleHashtable() {
+		this(noSlots);
+	}
+
+	public void put(String string, int i) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

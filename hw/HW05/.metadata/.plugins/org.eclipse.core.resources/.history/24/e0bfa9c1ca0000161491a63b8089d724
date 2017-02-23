@@ -1,0 +1,84 @@
+package hr.fer.zemris.java.tecaj.hw5.db;
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+import hr.fer.zemris.java.custom.collections.ObjectStack;
+
+/*public class QueryQueryAnalyzer {
+	switch (comparison) {
+	case (QueryAnalyzer.STRICTLYLESS_SIGN):
+		
+		break;
+	case (QueryAnalyzer.LESS_SIGN):
+
+		break;
+	case (QueryAnalyzer.GREATER_SIGN):
+
+		break;
+	case (QueryAnalyzer.STRICTLYGREATER_SIGN):
+
+		break;
+	case (QueryAnalyzer.EQUAL_SIGN):
+
+		break;
+	case (QueryAnalyzer.NOTEQUAL_SIGN):
+
+		break;
+
+	}
+}*/
+
+/**
+ * Analyzes the Query query.
+ * 
+ * @author Mia FIlić
+ *
+ */
+public class QueryQueryAnalyzer {
+
+	/**
+	 * Analyzes the IndexQuery.
+	 * 
+	 * @param sc
+	 *            that scans the next query
+	 * @param database Student database in which to check for the query
+	 * @return record of corresponding student
+	 * @throws InputMismatchException
+	 *             if illegal query is read
+	 */
+	public static StudentRecord queryQueryAnalyzer(Scanner sc,
+			StudentDatabase database) {
+
+		ObjectStack stack = new ObjectStack();
+		stack.push(QueryAnalyzer.QUERY);
+		
+		String line = sc.next().trim();
+		line = line.replaceAll(QueryAnalyzer.NOTEQUAL_SIGN," "+QueryAnalyzer.NOTEQUAL_SIGN+" ").trim();
+		line = line.replaceAll(QueryAnalyzer.LESS_SIGN," "+QueryAnalyzer.LESS_SIGN+" ").trim();
+		line = line.replaceAll(QueryAnalyzer.GREATER_SIGN," "+QueryAnalyzer.GREATER_SIGN+" ").trim();
+		line = line.replaceAll(QueryAnalyzer.EQUAL_SIGN," "+QueryAnalyzer.EQUAL_SIGN+" ").trim();
+		
+		String parts[] = line.split(" ");
+		StudentRecord record = null;
+		//prvo dobimo sve do 1 and pa do drugog end pa do treceg end itd.
+		
+		
+		
+		if(parts.length == 3){
+			System.out.println(line);
+			if(parts[0].equals("jmbag") && parts[1].equals("=")){
+				return record = database.forJMBAG(parts[2]);
+			} else {
+				throw new IllegalArgumentException("Invalid input stream.");
+			}
+			
+		} else {
+			throw new IllegalArgumentException("Invalid input stream.");
+		}
+
+		
+
+	}
+
+}

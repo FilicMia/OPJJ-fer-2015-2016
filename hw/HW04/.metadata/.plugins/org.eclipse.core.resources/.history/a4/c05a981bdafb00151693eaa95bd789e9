@@ -1,0 +1,43 @@
+package hr.fer.zemris.java.graphics.shapes;
+
+import org.junit.Test;
+
+import hr.fer.zemris.java.graphics.raster.*;
+import hr.fer.zemris.java.graphics.views.RasterView;
+import hr.fer.zemris.java.graphics.views.SimpleRasterView;
+
+public class GeometricShapesTest {
+
+	@Test
+	public void First() {
+		Rectangle rect1 = new Rectangle(0, 0, 4, 4);
+		Circle rect2 = new Circle(1, 1, 1);
+		BWRaster raster = new BWRasterMem(6, 5);
+		raster.enableFlipMode();
+		rect1.draw(raster);
+		rect2.draw(raster);
+		RasterView view = new SimpleRasterView();
+		view.produce(raster);
+		view.produce(raster);
+		System.out.println();
+		RasterView view2 = new SimpleRasterView('X', '_');
+		view2.produce(raster);
+	}
+	
+	@Test
+	public void Second() {
+		Rectangle rect1 = new Rectangle(0, 0, 4, 4);
+		Circle rect2 = new Circle(1, 1, 1);
+		BWRaster raster = new BWRasterMem(6, 5);
+		raster.enableFlipMode();
+		rect1.draw(raster);
+		rect2.draw(raster);
+		RasterView view = new SimpleRasterView();
+		view.produce(raster);
+		view.produce(raster);
+		System.out.println();
+		RasterView view2 = new SimpleRasterView('X', '_');
+		view2.produce(raster);
+	}
+
+}

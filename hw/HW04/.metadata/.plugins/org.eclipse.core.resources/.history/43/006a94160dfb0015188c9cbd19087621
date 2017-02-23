@@ -1,0 +1,434 @@
+package hr.fer.zemris.java.cstr;
+/**
+ * 
+ */
+
+import java.util.Arrays;
+
+/**
+ * The implementation of class String which offers similar functionality as the
+ * old JAVA official implementation (before 7u6) of the String class.
+ * 
+ * String instances don't allow users to change current data. That is the main
+ * reason why the substring operations can be performed in O(1) complexity.
+ * Multiple instances of strings share the same character array and remembers
+ * part of the array which belongs to them.
+ * 
+ * @author Mia Filić
+ * @version 1.0
+ *
+ */
+public class CString {
+
+	/** Unmodifiable character array. */
+	private final char[] value;
+	/**
+	 * The first index of character array that belongs to each instance of
+	 * CString.
+	 */
+	private final int offset;
+	/**
+	 * The length of char substring that belongs to each instance of CString.
+	 */
+	private final int count;
+
+	/**
+	 * Constructor using fields.
+	 * 
+	 * @param value
+	 *            Char array
+	 * 
+	 * @param offset
+	 *            first index of char substring that belongs to instance of
+	 *            CString
+	 * @param count
+	 *            length of char substring that belongs to instance of CString
+	 */
+	public CString(char[] value, int offset, int count) {
+
+		if (value == null) {
+			throw new NullPointerException();
+		}
+		if (offset < 0 || (offset > value.length)
+				|| (offset == value.length && value.length != 0)) {
+			throw new IndexOutOfBoundsException(
+					offset + " is illegal index in value.");
+		}
+		if (count < 0 || (count != 0 && (offset + count) > value.length)) {
+
+			throw new IllegalArgumentException("third argument: " + count);
+		}
+		this.value = value;
+		this.offset = offset;
+		this.count = count;
+	}
+
+	/**
+	 * Constructor that creates an instance of CString whose char substring is
+	 * whole <code>value</code> array.
+	 * 
+	 * @param value
+	 *            Char array
+	 */
+	public CString(char[] value) {
+		this(value, 0, value.length);
+	}
+
+	/**
+	 * Constructor that crates the new instance of CString that stores the same
+	 * sequence of characters stored in CString {@code original}.
+	 * 
+	 * If {@code original}s internal character array is larger than needed, this
+	 * new instance allocate its own character array of minimal required size
+	 * and copy data; otherwise it reuse {@code original}'s character array.
+	 * 
+	 * @param original
+	 *            CString object that has stores characters sequence that this
+	 *            object should have.
+	 */
+	public CString(CString original) {
+		this((original.offset != 0 || original.value.length != original.count)
+				? original.toCharArray() : original.value, 0, original.count);
+
+	}
+
+	/**
+	 * Returns the new instance of CString array that has the same character
+	 * data as given Java's {@code String} object.
+	 * 
+	 * @param s
+	 *            from which the new instance of {@code CString} will be
+	 *            created.
+	 * @return CString representation of {@code String} value {@code s}.
+	 */
+	public static CString fromString(String s) {
+		return new CString(s.toCharArray());
+	}
+
+	/**
+	 * Returns the length of this string. The length is equal to the number of
+	 * {@code char}s in the string.
+	 *
+	 * @return the length of the sequence of characters represented by this
+	 *         object.
+	 */
+	public int length() {
+		return this.count;
+	}
+
+	/**
+	 * Returns the {@code char} value at the specified index. Legal index range
+	 * is from {@code 0} to {@code length() - 1}.
+	 *
+	 * @param index
+	 *            the index of the {@code char} value.
+	 * @return the {@code char} value at the specified index of this string. The
+	 *         first {@code char} value is at index {@code 0}.
+	 * @exception IndexOutOfBoundsException
+	 *                if the {@code index} argument is illegal.
+	 */
+	public char charAt(int index) {
+		if (index < 0 || index >= count) {
+			throw new IndexOutOfBoundsException(
+					"Legal arguments are form 0 to count-1.");
+		}
+		return value[offset + index];
+	}
+
+	/**
+	 * Allocates the new array of length equals to length of this object, copies
+	 * string content into it and returns it.
+	 * 
+	 * New array is of length equals to length of this object,not it's internal
+	 * storage.
+	 * 
+	 * @return array representation of this string property
+	 */
+	public char[] toCharArray() {
+
+		char[] copy = new char[count];
+		for (int index = 0; index < count; ++index) {
+			copy[index] = value[offset + index];
+		}
+
+		return copy;
+	}
+
+	/**
+	 * Converts this CString into String.
+	 */
+	public String toString() {
+		return new String(value, offset, count);
+	}
+
+	/**
+	 * Finds and returns index of first occurrence of {@code char} or -1.
+	 * 
+	 * @param c
+	 *            the char of whose first occurrence will be found
+	 * @return index of first occurrence of {@code char} or -1.
+	 */
+	public int indexOf(char c) {
+		for (int index = offset; index < offset + count; ++index) {
+			if (value[index] == c) {
+				return index;
+			}
+		}
+		return -1;
+	}
+
+	/**
+	 * Checks if this string begins with given string.
+	 * 
+	 * @param s
+	 *            string for which should be checked if this starts with
+	 * @return {@code true} if this starts with s, {@code false} otherwise
+	 */
+
+	public boolean startsWith(CString s) {
+		return containsAt(s, 0);
+	}
+
+	/**
+	 * Checks if this string ends with given string {@code s}.
+	 * 
+	 * @param s
+	 *            string for which to be checked if this ends with
+	 * 
+	 * @return {@code true} if this string ends with given string, {@code false}
+	 *         otherwise
+	 */
+
+	public boolean endsWith(CString s) {
+		int position = count - s.length();
+		return containsAt(s, position);
+	}
+
+	/**
+	 * Checks if this string contains {@code s} string.
+	 * 
+	 * @param s
+	 *            for which should be checked if this contains it
+	 * @return {@code true} if this string contains given string at any
+	 *         position, {@code false} otherwise
+	 */
+	public boolean contains(CString s) {
+		int sLength = s.length();
+		if (count < sLength)
+			return false;
+		int end = count - sLength + 1;
+		for (int position = 0; position < end; ++position) {
+			if (value[position] == s.charAt(0)) {
+				if (containsAt(s, position))
+					return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Private method that checks if this string contains given string starting
+	 * with position {@code position}.
+	 * 
+	 * @param s
+	 *            string for which to be checked if this contains it with start
+	 *            at {@code position}
+	 * @param position
+	 *            (0 up to count-1)start index of this string that should be
+	 *            check for equality
+	 * 
+	 * 
+	 * @return {@code true} if this string contains given string starting with
+	 *         {@code position}, {@code false} otherwise
+	 */
+	private boolean containsAt(CString s, int position) {
+		int sLength = s.length();
+		if (position < offset || position >= offset + count)
+			return false;
+		if (count - position < sLength)
+			return false;
+		int start = offset + position;
+		for (int i = 0; i < sLength; ++i) {
+			if (value[start + i] != s.charAt(i)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Creates and returns new {@code CString} which representing a part of
+	 * original string. Position endIndex does not belong to the substring. It
+	 * holds: startIndex>=0, endIndex>=startIndex. It's complexity is O(1).
+	 * 
+	 * @param startIndex
+	 *            start position of the wanted part of original string
+	 * @param endIndex
+	 *            first index after the wanted part of the original string
+	 * 
+	 * @return new CString representing a part of the original string
+	 * 
+	 */
+
+	public CString substring(int startIndex, int endIndex) {
+		if (startIndex < 0 || startIndex >= count) {
+			throw new IndexOutOfBoundsException(startIndex + " ");
+		}
+		if (endIndex < startIndex) {
+			throw new IllegalArgumentException(
+					"EndIndex must be greater than startIndex");
+		}
+		return new CString(value, startIndex + offset, endIndex - startIndex);
+
+	}
+
+	/**
+	 * Creates and returns new CString which represents starting part of
+	 * original string and is of length n.
+	 * 
+	 * @param n
+	 *            length of string that will be created
+	 * @return new {@code CString} which represents starting part of original
+	 *         string and is of length {@code n}
+	 * @throws IllegalArgumentException
+	 *             if n <= 0
+	 */
+	public CString left(int n) {
+		if (n < 0) {
+			throw new IllegalArgumentException(
+					"n must be greater than zero " + n);
+		}
+		return substring(0, n);
+	}
+
+	/**
+	 * Creates and returns new CString which represents end part of original
+	 * string and is of length n.
+	 * 
+	 * @param n
+	 *            length of string that will be created
+	 * @return new {@code CString} which represents end part of original string
+	 *         and is of length {@code n}
+	 * @throws IllegalArgumentException
+	 *             if n <= 0
+	 */
+	public CString right(int n) {
+		if (n < 0) {
+			throw new IllegalArgumentException(
+					"n must be greater than zero " + n);
+		}
+		return substring(count - n, count);
+	}
+
+	/**
+	 * Creates a new CString which is concatenation of current and given string.
+	 * 
+	 * @param s
+	 *            string to be concatenated to this string
+	 * @return concatenation of this and given string
+	 */
+	public CString add(CString s) {
+		int newCount = count + s.length();
+		char[] data = new char[newCount];
+		for (int index = 0; index < count; ++index) {
+			data[index] = value[index];
+		}
+		int lengthS = s.length();
+		for (int index = 0; index < lengthS; ++index) {
+			data[count + index] = s.charAt(index);
+		}
+		return new CString(data, 0, newCount);
+	}
+
+	/**
+	 * Creates a new {@code CString} in which each occurrence of old character
+	 * is replaces with new character.
+	 * 
+	 * @param oldChar
+	 *            character to be replaced
+	 * @param newChar
+	 *            character to replace the oldCharacter
+	 * @return new {@code CString}in which each occurrence of old character is
+	 *         replaces with new character
+	 */
+	public CString replaceAll(char oldChar, char newChar) {
+		char[] newValue = toCharArray();
+		for (int index = 0; index < newValue.length; ++index) {
+			if (value[index] == oldChar) {
+				newValue[index] = newChar;
+			}
+		}
+		return new CString(newValue, 0, count);
+	}
+
+	/**
+	 * Creates a new {@code CString} in which each occurrence of old substring
+	 * is replaces with the new substring.
+	 * 
+	 * @param oldStr
+	 *            that will be replaced
+	 * @param newStr
+	 *            substring that will replace the each occuranec of oldStr
+	 * @return new {@code CString} in which each occurrence of old substring is
+	 *         replaces with the new substring
+	 */
+	public CString replaceAll(CString oldStr, CString newStr) {
+		int newStrLength = newStr.length();
+		int oldStrLength = oldStr.length();
+		int newCount = count * newStrLength, firstUnused = 0;
+		char[] newValue = new char[newCount];
+
+		if (oldStrLength == 0) {
+			copyInAt(newStr, newValue, firstUnused);
+			firstUnused += newStrLength;
+			for (int index = 0; index < count; ++index) {
+				newValue[firstUnused++] = value[index];
+				copyInAt(newStr, newValue, firstUnused);
+				firstUnused += newStrLength;
+				} else {
+					newValue[firstUnused++] = charAt(index);
+				}
+			}
+			
+		} else {
+
+			for (int index = 0; index < count; ++index) {
+				if (containsAt(oldStr, index)) {
+					copyInAt(newStr, newValue, firstUnused);
+					firstUnused += newStrLength;
+					index += oldStrLength - 1;
+				} else {
+					newValue[firstUnused++] = charAt(index);
+				}
+			}
+			newCount = firstUnused;
+			return new CString(Arrays.copyOf(newValue, newCount));
+		}
+	}
+
+	/**
+	 * Copies string content into char sequence <code>value</code> starting at
+	 * index <code>atIndex</code> up to <code>atIndex + s.length()</code>. If
+	 * there is no enough space for coping string into <code>value</code>
+	 * starting with given index ,method does nothing.
+	 * 
+	 * @param s
+	 *            {@code CString} whose content should be copied into char array
+	 *            value
+	 * @param value
+	 *            char array into which the content of string s will be copied
+	 * @param atIndex
+	 *            starting index in {@code value }where to copy content of
+	 *            string s
+	 */
+	private void copyInAt(CString s, char[] value, int atIndex) {
+		if (atIndex + s.length() >= value.length) {
+			return;
+		}
+		int sLength = s.length();
+		for (int index = 0; index < sLength; ++index) {
+			value[atIndex + index] = s.charAt(index);
+		}
+	}
+
+}

@@ -1,0 +1,135 @@
+package hr.fer.zemris.java.tecaj.hw5.db;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import hr.fer.zemris.java.tecaj.hw5.collections.SimpleHashtable;
+import hr.fer.zemris.java.tecaj.hw5.collections.SimpleHashtable.TableEntry;
+
+/***
+ * Database of students records. Each record saves the one student
+ * jmbag,name,last name,final grade.
+ * 
+ */
+public class StudentDatabase {
+
+	private SimpleHashtable<String, StudentRecord> database;
+
+	/**
+	 * Constructor that creates the list of students records corresponding the
+	 * given list of strings. Each string preserve information about one
+	 * student.
+	 * 
+	 * @param database
+	 *            list of string represented record of student
+	 */
+	public StudentDatabase(List<String> database) Iterable<TableEntry<StudentRecord>>{
+
+		this.database = new SimpleHashtable<String, StudentRecord>();
+		for (String student : database) {
+			addRecord(student);
+		}
+	}
+
+	/**
+	 * Add the corresponding {@code StudentRecord} of record passed.
+	 * 
+	 * @param student
+	 *            {@code String}representation of one student's record
+	 */
+	private void addRecord(String student) {
+		if (student == null) {
+			throw new NullPointerException("No null records are allowed.");
+		}
+		student.trim();
+		String[] record = student.split("\\" + StudentRecord.DELIMITER + "+");
+
+		if (record.length != StudentRecord.ARGC
+				|| !record[0].matches(StudentRecord.JMBG_REGEX)
+				|| !record[1].matches(StudentRecord.LASTNAME_REGEX)
+				|| !record[2].matches(StudentRecord.FIRSTNAME_REGEX)
+				|| !record[3].matches(StudentRecord.FINALGRADE_REGEX)) {
+			throw new IllegalArgumentException(
+					"String representation of the given record is wrong: "
+							+ student);
+		}
+
+		database.put(record[0],
+				new StudentRecord(record[0], record[1], record[2], record[3]));
+	}
+
+	/**
+	 * Creates the string list of databese records.
+	 */
+	public List<String> createListOfAll() {
+		List<String> list = new ArrayList<>();
+
+		for (TableEntry<String, StudentRecord> iter : database) {
+			list.add(iter.getValue().toString());
+		}
+
+		return list;
+	}
+
+	/**
+	 * Find and returns the record for student with specific jmbag.
+	 * 
+	 * @param jmbag
+	 *            jmbag of student
+	 * @return record for specific student, {@code null} if no such jmbag exists
+	 *         in base
+	 */
+	public StudentRecord forJMBAG(String jmbag) {
+		return database.get(jmbag);
+	}
+
+	/**
+	 * Finds all records that satisfied given filter, returns it as list of
+	 * records.
+	 * 
+	 * @param filter
+	 *            filter to be satisfied
+	 * @return list of records satisfies the given filter
+	 */
+	public List<StudentRecord> filter(IFilter filter) {
+		List<StudentRecord> list = new ArrayList<>();
+		for (TableEntry<String, StudentRecord> record : database) {
+			if (filter.accepts(record.getValue())) {
+				list.add(record.getValue());
+			}
+		}
+
+		return list;
+	}
+
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		for (TableEntry<String, StudentRecord> iter : database) {
+			sb.append(iter.getValue());
+		}
+
+		return sb.toString();
+	}
+
+	/**
+	 * Method returnes all stored records.
+	 * 
+	 * @return list of records
+	 * 
+	 */
+	public List<StudentRecord> getAll(){
+		List<StudentRecord> list = new ArrayList<>();
+		for (TableEntry<String, StudentRecord> iter : database) {
+			list.add(iter.getValue());
+		}
+
+		return list;
+	}
+
+	//////////////////////////////////////////
+	public SimpleHashtable<String, StudentRecord> getBase() {
+
+		return database;
+	}
+}

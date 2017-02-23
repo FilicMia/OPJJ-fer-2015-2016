@@ -1,0 +1,72 @@
+/**
+ * 
+ */
+package hr.fer.zemris.java.graphics.views;
+
+import hr.fer.zemris.java.graphics.raster.BWRaster;
+
+/**
+ * Class responsible for textual visualization of images on standard output.
+ * 
+ * @author Mia Filić
+ *
+ */
+public class SimpleRasterView implements RasterView {
+	/** Character that will be used to represent pixels that are turned on. */
+	private char on;
+	/** Character that will be used to represent pixels that are turned off. */
+	private char off;
+
+	/**
+	 * Default constructor. It sets properties on default values: '*' for
+	 * {@code turnsOn} and '.' for {@code turnsOff}.
+	 * 
+	 */
+	public SimpleRasterView() {
+		this('*', '.');
+	}
+
+	/**
+	 * Constructor sets properties on given values.
+	 * 
+	 * @param on
+	 *            Character that will be used to represent pixels that are
+	 *            turned on.
+	 * @param off
+	 *            Character that will be used to represent pixels that are
+	 *            turned off.
+	 */
+	public SimpleRasterView(char on, char off) {
+		super();
+		this.on = on;
+		this.off = off;
+	}
+
+	/**
+	 * Outputs the textual representation of image to standard output and
+	 * returns null as result.
+	 * 
+	 * @param raster
+	 *            raster whose picture/image will produce
+	 * @return {@code null}
+	 */
+	@Override
+	public Object produce(BWRaster raster) {
+		int width = raster.getWidth();
+		int heigth = raster.getHeigth();
+		StringBuilder sb = new StringBuilder(heigth * (width + 1));
+
+		for (int x = 0; x < width; ++x) {
+			for (int y = 0; y < heigth; ++y) {
+				if (raster.isTurnedOn(x, y)) {
+					sb.append(on);
+				} else {
+					sb.append(off);
+				}
+			}
+		}
+
+		return null;
+	}
+
+}

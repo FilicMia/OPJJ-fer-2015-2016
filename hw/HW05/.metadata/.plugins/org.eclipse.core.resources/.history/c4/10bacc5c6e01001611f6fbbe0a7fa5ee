@@ -1,0 +1,12 @@
+package hr.fer.zemris.java.tecaj.hw5.db;
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class Test {
+
+	public static void main(String[] args) {
+		System.out.println("Krivi");
+	}
+
+}

@@ -1,0 +1,325 @@
+/**
+ * 
+ */
+package hr.fer.zemris.java.custom.scripting.parser;
+
+import hr.fer.zemris.java.custom.collections.ArrayIndexedCollection;
+import hr.fer.zemris.java.custom.collections.ObjectStack;
+import hr.fer.zemris.java.custom.scripting.elems.*;
+import hr.fer.zemris.java.custom.scripting.lexer.*;
+import hr.fer.zemris.java.custom.scripting.nodes.*;
+
+
+/**
+ * Class implementing parser. It creates Tree-Node model hierarchy for the
+ * specific Document. It uses instance of <code>Lexer</code> for production of
+ * tokens.
+ * 
+ * @author mia
+ *
+ */
+public class SmartScriptParser {
+
+	/**
+	 * Tree construction of the document represented by its root.
+	 */
+	private DocumentNode root;
+	
+	/**
+	 * Collection used as help in construction of document tree.
+	 */
+	private ObjectStack stack;
+	
+	{
+		root = new DocumentNode();
+		stack = new ObjectStack();
+	}
+	
+	/**
+	 * Public constructor. It creates tree construction of passed document.
+	 * 
+	 * @param document
+	 *            represents the document for which tree hierarchy should be
+	 *            created; <code>String</code>
+	 */
+	public SmartScriptParser(String document) {
+		try {
+			Lexer lexer = new Lexer(document);
+			parse(lexer);
+		} catch (Exception e) {
+			throw new SmartScriptParserException(e.getMessage());
+		}
+
+	}
+
+	/**
+	 * Private method that parses the document and creates the corresponding
+	 * document tree.
+	 * 
+	 * @param lexer
+	 *            used for generating tags.
+	 */
+	private void parse(Lexer lexer) {
+		stack.push(root);
+
+		while (lexer.nextToken().getType() != TokenType.EOF) {
+			Token token = lexer.getToken();
+			if (token.getValue().equals("{$")) {
+				if (lexer.getState() != LexerState.BASIC) {
+					throw new SmartScriptParserException(
+							"Wrong lexer state at current token.");
+				} else {
+					lexer.setState(LexerState.EXTENDED);
+
+				}
+				createTagNode(lexer);
+				continue;
+			} else {
+				if (token.getType() != TokenType.TEXT) {
+					throw new SmartScriptParserException(
+							"Invalid token at this point.");
+				}
+				TextNode node = new TextNode((String) token.getValue());
+				Node last = (Node) stack.peek();
+				last.addChildNode(node);
+			}
+
+		}
+		if(stack.size() != 1){
+			throw new SmartScriptParserException(
+					"Too less end tags.");
+		}
+
+	}
+
+	/**
+	 * Private supplementary method that creates and pushes the next tag into
+	 * document tree.
+	 * 
+	 * @param lexer
+	 *            used for generating tags
+	 */
+	private void createTagNode(Lexer lexer) {
+		// first find out the name
+		Token token = lexer.nextToken();
+		Node node = null;
+
+		if (token.getType() != TokenType.Name) {
+			throw new SmartScriptParserException(
+					"Expecting the name of tag, but there is no one.");
+		}
+
+		if (token.getValue().equals("=")) {
+			node = createEchoTag(lexer);
+			Node last = (Node) stack.peek();
+			last.addChildNode(node);
+
+		} else {
+			// for later use if there gone be more of it
+			switch (token.getValue().toString().toUpperCase()) {
+			case ("FOR"):
+				node = createForLoopNode(lexer);
+				break;
+			case ("END"):
+				evaluateEndTag(lexer);
+				return;
+
+			}
+
+			if (node == null) {
+				throw new SmartScriptParserException("No miningful node.");
+			}
+			Node last = (Node) stack.peek();
+			last.addChildNode(node);
+			stack.push(node);
+		}
+
+		if (lexer.getState() != LexerState.EXTENDED) {
+			throw new SmartScriptParserException(
+					"Wrong lexer state at current token.");
+		} else {
+			lexer.setState(LexerState.BASIC);
+
+		}
+
+	}
+
+	/**
+	 * Private method that evaluates end tag. It simple pop one entry from the
+	 * stack. If stack remains empty, there is error in document – it contains
+	 * more {$END$}-s than opened non-empty tags, so an exception is thrown.
+	 * When the tag is evaluated, lexer state is set to BASIC state.
+	 * 
+	 * @param lexer
+	 *            used for creating tokens; <code>Lexer</code>
+	 * @thrown SmartScriptParserException
+	 */
+	private void evaluateEndTag(Lexer lexer) {
+		Token token = lexer.nextToken();
+		if (!token.getValue().equals("$}")) {
+			throw new SmartScriptParserException(
+					"There is no end of the tag (\"$}\").");
+		}
+		stack.pop();
+		if (stack.isEmpty()) {
+			throw new SmartScriptParserException(
+					"There is more than one END-tag.");
+		}
+
+		if (lexer.getState() != LexerState.EXTENDED) {
+			throw new SmartScriptParserException(
+					"Wrong lexer state at current token.");
+		} else {
+			lexer.setState(LexerState.BASIC);
+
+		}
+
+	}
+
+	/**
+	 * Private supplementary method that creates Echo tag. If error occurs,
+	 * <code>SmartScriptParserException</code> is thrown
+	 * 
+	 * @param lexer
+	 *            used for creating tokens; <code>Lexer</code>
+	 * @thrown <code>SmartScriptParserException</code> if an error occurs
+	 * @return created echo node; <code>EchoNode</code>
+	 */
+	private Node createEchoTag(Lexer lexer) {
+
+		Element[] elements;
+		ArrayIndexedCollection tokens = new ArrayIndexedCollection();
+
+		Token token = lexer.nextToken();
+
+		while (token.getType() != TokenType.EOF
+				&& !token.getValue().equals("$}")) {
+
+			tokens.add(token);
+			token = lexer.nextToken();
+		}
+
+		if (token.getType() == TokenType.EOF) {
+			throw new SmartScriptParserException("No end of tag. ");
+		}
+
+		int size = tokens.size();
+		elements = new Element[size];
+		for (int index = 0; index < size; index++) {
+			elements[index] = ((Element) createElement(
+					(Token) tokens.get(index)));
+		}
+
+		return new EchoNode(elements);
+	}
+
+	/**
+	 * Supplementary method that creates the instance of right subclass of class
+	 * Element due to given token.
+	 * 
+	 * @param token
+	 *            token to be transformed into the instance of
+	 *            <code>Element</code>
+	 * @return instance corresponding given token; <code>Element</code>
+	 */
+	private Element createElement(Token token) {
+		switch (token.getType()) {
+		case Name:
+			if (token.getValue() == "=") {
+				throw new SmartScriptParserException(
+						"Invalid token at this point: " + token.getValue());
+			} else {
+				return new ElementVariable(token.getValue().toString());
+			}
+			// break;
+		case NUMBER:
+			if (token.getValue() instanceof Double) {
+				return new ElementConstantDouble((double) token.getValue());
+			} else {
+				return new ElementConstantInteger((int) token.getValue());
+			}
+			// break;
+		case FunctName:
+			return new ElementFunction(token.getValue().toString());
+		// break;
+		case STRING:
+			return new ElementString(token.getValue().toString());
+		// break;
+		case Operator:
+			return new ElementOperator(token.getValue().toString());
+		// break;
+		default:
+			throw new SmartScriptParserException(
+					"No miningful tag for this point. " + token.getValue());
+		}
+	}
+
+	/**
+	 * Private supplementary method that creates for-loop node. If error occurs,
+	 * <code>SmartScriptParserException</code> is thrown
+	 * 
+	 * @param lexer
+	 *            used for creating tokens; <code>Lexer</code>
+	 * @thrown <code>SmartScriptParserException</code> if an error occurs
+	 * @return created for-loop node; <code>ForLoopNode</code>
+	 */
+	private ForLoopNode createForLoopNode(Lexer lexer) {
+		ElementVariable variable;
+		Element[] arguments = new Element[ForLoopNode.maxElements-1];
+		Token[] tokens = new Token[ForLoopNode.maxElements-1];
+
+		Token token = lexer.nextToken();
+		if (token.getType() != TokenType.Name || token.getValue() == "=") {
+			throw new SmartScriptParserException(
+					"Expecting variable name: " + token.getValue());
+		} else {
+			variable = new ElementVariable(token.getValue().toString());
+		}
+
+		int iter = 0, argc = ForLoopNode.maxElements-1;
+		token = lexer.nextToken();
+		while (token.getType() != TokenType.EOF && iter < argc
+				&& !token.getValue().equals("$}")) {
+			tokens[iter++] = token;
+			token = lexer.nextToken();
+		}
+
+		if (token.getType() == TokenType.EOF) {
+			throw new SmartScriptParserException("No end of tag. ");
+		}
+
+		// checking the number of arguments
+		if (iter < ForLoopNode.minElements-1) {
+			throw new SmartScriptParserException(
+					"1ForLoopNode has 3 or 4 properties not " + iter);
+		} else {
+			if (iter > ForLoopNode.maxElements-1) {
+				throw new SmartScriptParserException(
+						"2ForLoopNode has 3 or 4 properties not more.");
+			}else{
+				
+				if(iter == argc && !lexer.getToken().getValue().equals("$}") && !lexer.nextToken().getValue().equals("$}")){
+	
+					throw new SmartScriptParserException(
+							"3ForLoopNode has 3 or 4 properties not more.");
+				}
+			}
+		}
+		
+		argc = iter;
+		for (iter = 0; iter < argc; iter++) {
+			arguments[iter] = createElement(tokens[iter]);
+		}
+		return new ForLoopNode(variable, arguments[0], arguments[1],
+				arguments[2]);
+	}
+
+	/**
+	 * Public method that returns the tree representation of passed document.
+	 * 
+	 * @return root of document tree; <code>DocumentNode</code>
+	 */
+	public DocumentNode getDocumentNode() {
+		return root;
+	}
+}

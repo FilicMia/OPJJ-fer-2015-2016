@@ -1,0 +1,37 @@
+package hr.fer.zemris.java.tecaj.hw5.db.coperator;
+
+import hr.fer.zemris.java.tecaj.hw5.db.StudentDatabase;
+import hr.fer.zemris.java.tecaj.hw5.db.StudentRecord;
+
+/**
+ * Compares two strings.
+ * 
+ * @author Mia Filić
+ *
+ */
+public class Like implements IComparisonOperator {
+
+	/**
+	 * Checks if first value is Greater than second one.
+	 * 
+	 * @param value1
+	 *            first string
+	 * @param value2
+	 *            second string
+	 * @return {@code true} is strings are related due to relation
+	 *         greater, {@code false} otherwise
+	 */
+	@Override
+	public boolean satisfied(String value1, String value2) {
+		if(value1 == null || value2 == null){
+			throw new NullPointerException();
+		}
+		if(value2.replaceFirst("\\*", "\\.").indexOf('\\*')!=-1){
+			throw new IllegalArgumentException();
+		}
+		
+		value2 = value2.replaceAll("\\*", "[a-zA-ZčČćĆšŠžŽđĐ]*");
+		return value1.matches(value2);
+	}
+
+}

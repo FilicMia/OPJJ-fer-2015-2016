@@ -1,0 +1,60 @@
+/**
+ * 
+ */
+package hr.fer.zemris.java.tecaj.hw5.views;
+
+import hr.fer.zemris.java.graphics.raster.BWRaster;
+
+/**
+ * Class responsible for textual visualization of images on standard output.
+ * 
+ * @author Mia Filić
+ *
+ */
+public class SimpleRasterView implements RasterView {
+	/** Character that will be used to represent pixels that are turned on. */
+	private char on;
+	/** Character that will be used to represent pixels that are turned off. */
+	private char off;
+
+	/**
+	 * Default constructor. It sets properties on default values: '*' for
+	 * {@code turnsOn} and '.' for {@code turnsOff}.
+	 * 
+	 */
+	public SimpleRasterView() {
+		this('*', '.');
+	}
+
+	/**
+	 * Constructor sets properties on given values.
+	 * 
+	 * @param on
+	 *            Character that will be used to represent pixels that are
+	 *            turned on.
+	 * @param off
+	 *            Character that will be used to represent pixels that are
+	 *            turned off.
+	 */
+	public SimpleRasterView(char on, char off) {
+		super();
+		this.on = on;
+		this.off = off;
+	}
+
+	/**
+	 * Outputs the textual representation of image to standard output and
+	 * returns null as result.
+	 * 
+	 * @param raster
+	 *            raster whose picture/image will produce
+	 * @return {@code null}
+	 */
+	@Override
+	public Object produce(BWRaster raster) {
+		StringRasterView stringRasterView = new StringRasterView(on, off);
+		System.out.println(stringRasterView.produce(raster));
+		return null;
+	}
+
+}

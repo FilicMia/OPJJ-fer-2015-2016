@@ -1,0 +1,392 @@
+package hr.fer.zemris.java.tecaj.hw5.db;
+
+import static org.junit.Assert.*;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.InputMismatchException;
+import java.util.Iterator;
+import java.util.List;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
+import hr.fer.zemris.java.tecaj.hw5.collections.SimpleHashtable;
+import hr.fer.zemris.java.tecaj.hw5.collections.SimpleHashtable.TableEntry;
+import hr.fer.zemris.java.tecaj.hw5.db.filter.QueryFilter;
+import hr.fer.zemris.java.tecaj.hw5.views.StringView;
+import hr.fer.zemris.java.tecaj.hw5.views.View;
+
+public class JUnitTests {
+	@Ignore
+	@Test
+	public void TestStudentBaseCreation() {
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader("database.txt"));
+		} catch (FileNotFoundException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+		String line;
+		List<String> database = new ArrayList<String>();
+
+		try {
+			while ((line = reader.readLine()) != null) {
+				database.add(line);
+			}
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+		try {
+			reader.close();
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+		//System.out.println(database);
+
+		StudentDatabase base = new StudentDatabase(database);
+		//System.out.println(base.createListOfAll());
+		StudentDatabase base2 = new StudentDatabase(base.createListOfAll());
+		equalCollection(base.getBase(), base2.getBase());
+
+	}
+
+	
+	@Test
+	public void TestGetJMBAG() {
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader("database.txt"));
+		} catch (FileNotFoundException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+		String line;
+		List<String> database = new ArrayList<String>();
+
+		try {
+			while ((line = reader.readLine()) != null) {
+				database.add(line);
+			}
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+		try {
+			reader.close();
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+
+		StudentDatabase base = new StudentDatabase(database);
+		// System.out.println(base.createListOfAll());
+		assertEquals("0000000044	Pilat	Ivan	5",
+				base.forJMBAG("0000000044").toString());
+
+	}
+	
+	@Ignore
+	@Test
+	public void testQuery() {
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader("database.txt"));
+		} catch (FileNotFoundException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+		String line;
+		List<String> database = new ArrayList<String>();
+
+		try {
+			while ((line = reader.readLine()) != null) {
+				database.add(line);
+			}
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+		try {
+			reader.close();
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+
+		StudentDatabase base = new StudentDatabase(database);
+
+		String queryName = "query";
+		String pattern = "[a-zA-Z]+";
+
+		QueryFilter exp = null;
+
+		String queryLine = "jmbag<\"0000000020\" and lastName>\"B\" And firstName>=\"Sanjin\"";
+
+		switch (queryName.toLowerCase().trim()) {
+		case (QueryAnalyzer.INDEXQUERY ):
+			exp = new QueryFilter(queryLine);
+			break;
+		case (QueryAnalyzer.QUERY):
+			exp = new QueryFilter(queryLine);
+			break;
+		default:
+			throw new InputMismatchException();
+		}
+
+		if (exp == null) {
+			System.out.println("Nothing to show.");
+		}
+
+		List<String> addThatSatisfies = new ArrayList<>();
+		List<String> check = new ArrayList<>();
+		check.add("0000000019	Gvardijan	Slaven	4");
+		check.add("0000000007	Čima	Sanjin	4");
+		
+		for (TableEntry<String, StudentRecord> data: base){
+			if(exp.accepts(data.getValue())){
+				//System.out.println(data.getValue().toString());
+				addThatSatisfies.add(data.getValue().toString());
+			}
+		}
+		
+		StudentDatabase gotten = new StudentDatabase(addThatSatisfies);
+		StudentDatabase controlDatabase = new StudentDatabase(addThatSatisfies);
+		
+		equalCollection(controlDatabase.getBase(), gotten.getBase());
+			
+	}
+	@Ignore
+	@Test
+	public void testQuery2() {
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader("database.txt"));
+		} catch (FileNotFoundException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+		String line;
+		List<String> database = new ArrayList<String>();
+
+		try {
+			while ((line = reader.readLine()) != null) {
+				database.add(line);
+			}
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+		try {
+			reader.close();
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+
+		StudentDatabase base = new StudentDatabase(database);
+
+		String queryName = "query";
+		QueryFilter exp = null;
+
+		String queryLine = "lastName=\"Gvardijan\"";
+
+		switch (queryName.toLowerCase().trim()) {
+		case (QueryAnalyzer.INDEXQUERY ):
+			exp = new QueryFilter(queryLine);
+			break;
+		case (QueryAnalyzer.QUERY):
+			exp = new QueryFilter(queryLine);
+			break;
+		default:
+			throw new InputMismatchException();
+		}
+
+		if (exp == null) {
+			System.out.println("Nothing to show.");
+		}
+		
+		List<String> addThatSatisfies = new ArrayList<>();
+		List<String> check = new ArrayList<>();
+		check.add("0000000019	Gvardijan	Slaven	4");
+		
+		for (TableEntry<String, StudentRecord> data: base){
+			if(exp.accepts(data.getValue())){
+				System.out.println(data.getValue().toString());
+				addThatSatisfies.add(data.getValue().toString());
+			}
+		}
+		
+		StudentDatabase gotten = new StudentDatabase(addThatSatisfies);
+		StudentDatabase controlDatabase = new StudentDatabase(check);
+		
+		equalCollection(controlDatabase.getBase(), gotten.getBase());
+		
+			
+	}
+	
+	@Ignore
+	@Test
+	public void testQueryLIKE() {
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader("database.txt"));
+		} catch (FileNotFoundException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+		String line;
+		List<String> database = new ArrayList<String>();
+
+		try {
+			while ((line = reader.readLine()) != null) {
+				database.add(line);
+			}
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+		try {
+			reader.close();
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+
+		StudentDatabase base = new StudentDatabase(database);
+
+		String queryName = "query";
+		String pattern = "[a-zA-Z]+";
+
+		QueryFilter exp = null;
+
+		String queryLine = "jmbag<\"0000000020\" and firstName LIKE \"*anjin\"";
+
+		switch (queryName.toLowerCase().trim()) {
+		case (QueryAnalyzer.INDEXQUERY ):
+			exp = new QueryFilter(queryLine);
+			break;
+		case (QueryAnalyzer.QUERY):
+			exp = new QueryFilter(queryLine);
+			break;
+		default:
+			throw new InputMismatchException();
+		}
+
+		if (exp == null) {
+			System.out.println("Nothing to show.");
+		}
+
+		List<String> addThatSatisfies = new ArrayList<>();
+		List<String> check = new ArrayList<>();
+		check.add("0000000007	Čima	Sanjin	4");
+		
+		for (TableEntry<String, StudentRecord> data: base){
+			if(exp.accepts(data.getValue())){
+				//System.out.println(data.getValue().toString());
+				addThatSatisfies.add(data.getValue().toString());
+			}
+		}
+		
+		StudentDatabase gotten = new StudentDatabase(addThatSatisfies);
+		StudentDatabase controlDatabase = new StudentDatabase(check);
+		
+		equalCollection(controlDatabase.getBase(), gotten.getBase());
+			
+	}
+	
+	
+	@Test
+	public void testDraw() {
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader("database.txt"));
+		} catch (FileNotFoundException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+		String line;
+		List<String> database = new ArrayList<String>();
+
+		try {
+			while ((line = reader.readLine()) != null) {
+				database.add(line);
+			}
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+		try {
+			reader.close();
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+
+		StudentDatabase base = new StudentDatabase(database);
+
+		String queryName = "query";
+		String pattern = "[a-zA-Z]+";
+
+		QueryFilter exp = null;
+
+		String queryLine = "jmbag<\"0000000020\" and lastName>\"B\" And firstName>=\"Sanjin\"";
+
+		switch (queryName.toLowerCase().trim()) {
+		case (QueryAnalyzer.INDEXQUERY ):
+			exp = new QueryFilter(queryLine);
+			break;
+		case (QueryAnalyzer.QUERY):
+			exp = new QueryFilter(queryLine);
+			break;
+		default:
+			throw new InputMismatchException();
+		}
+
+		if (exp == null) {
+			System.out.println("Nothing to show.");
+		}
+
+		List<String> addThatSatisfies = new ArrayList<>();
+		List<String> check = new ArrayList<>();
+		check.add("0000000019	Gvardijan	Slaven	4");
+		check.add("0000000007	Čima	Sanjin	4");
+		
+		List<StudentRecord> records = new ArrayList<>();
+		
+		for (TableEntry<String, StudentRecord> data: base){
+			if(exp.accepts(data.getValue())){
+				//System.out.println(data.getValue().toString());
+				addThatSatisfies.add(data.getValue().toString());
+				records.add(data.getValue());
+			}
+		}
+		
+		StudentDatabase gotten = new StudentDatabase(addThatSatisfies);
+		StudentDatabase controlDatabase = new StudentDatabase(addThatSatisfies);
+		
+		View view = new StringView();
+		String str = view.produce(records);
+		
+		equalCollection(controlDatabase.getBase(), gotten.getBase());
+			
+	}
+	
+
+	private void equalCollection(SimpleHashtable<String, StudentRecord> first,
+			SimpleHashtable<String, StudentRecord> second) {
+		assertEquals(first.size(), second.size());
+		for (TableEntry<String, StudentRecord> iter : first) {
+			assertEquals(iter.getValue().toString(),
+					second.get(iter.getKey()).toString());
+			
+		}
+	}
+}

@@ -1,0 +1,17 @@
+package hr.fer.zemris.java.graphics.shapes;
+
+public class Square extends GeometricShape {
+	/** x coordinate of the upper left corner */
+	private int x;
+	/** y coordinate of the upper left corner */
+	private int y;
+	/**Size of the each side of square*/
+	private int size;
+
+	@Override
+	public boolean containsPoint(int x, int y) {
+
+		return false;
+	}
+
+}

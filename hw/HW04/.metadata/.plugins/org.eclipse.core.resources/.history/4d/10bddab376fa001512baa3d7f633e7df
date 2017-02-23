@@ -1,0 +1,9 @@
+package hr.fer.zemris.java.graphics.raster;
+/**
+ * 
+ * @author Mia Filić
+ *
+ */
+public interface BWRaster {
+
+}

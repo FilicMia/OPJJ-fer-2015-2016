@@ -1,0 +1,10 @@
+package hr.fer.zemris.java.graphics.shapes;
+
+public class Test {
+
+	public static void main(String[] args) {
+		Retangle rectangle = new Rectangle(2,3,1,1);
+
+	}
+
+}

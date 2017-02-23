@@ -1,0 +1,87 @@
+package hr.fer.zemris.java.graphics.views;
+
+import java.io.InputStreamReader;
+import java.util.Scanner;
+
+import hr.fer.zemris.java.graphics.shapes.GeometricShapeType;
+import hr.fer.zemris.java.graphics.shapes.GeometricShapesTest;
+import hr.fer.zemris.java.graphics.shapes.Rectangle;
+
+/**
+ * Handles with the user input.
+ * 
+ * User will tell what he wants to create by typing, one shape per line. First
+ * line will contain a number of shapes that follow. If user provided more than
+ * said(in first input) additional lines, everything is discard but first line
+ * In each line arguments are separated by one or more spaces (ascii 32).
+ * 
+ * 
+ * Your program should create an array with references to instances of specified
+ * objects. When you see “FLIP”, add null reference.
+ * 
+ * @author mia
+ *
+ */
+public class UserInputHandler {
+
+	/**
+	 * Method that handles the input stream.
+	 * 
+	 * @return string array of lines of user input
+	 * @throws Exception
+	 *             when user provides an inappropriate input
+	 */
+	public static String[] handleInput() throws Exception {
+		Scanner sc = new Scanner(System.in);
+		int numLines = sc.nextInt();
+		String[] lines = new String[numLines];
+		String name = null;
+
+		sc.nextLine();
+		for (int line = 0; line < numLines; ++line) {
+			handleLine(sc);
+		}
+
+		return lines;
+	}
+
+	/**
+	 * Method that handles one line of user input read by scanner. Every
+	 * parametar in lin eis separated with one or more spaces.
+	 * 
+	 * @param sc
+	 *            scanner
+	 */
+	private static void handleLine(Scanner sc) {
+		String nameOfShape = null;
+		String pattern = "[a-zA-Z]+";
+		if (sc.hasNext(pattern)) {
+			nameOfShape = sc.next(pattern);
+		} else {
+			throw new Exception("Invalid input stream.");
+		}
+
+		switch (nameOfShape.toUpperCase()) {
+		case Rectangle.name:
+
+			break;
+		case "SQUARE":
+
+			break;
+		case "CIRCLE":
+
+			break;
+case "RECTANGLE" :
+			
+			break;
+
+		}
+
+	}
+
+	/**
+	 * Method that handles user input line with specified arguments for creation
+	 * of rectangle.
+	 */
+
+}

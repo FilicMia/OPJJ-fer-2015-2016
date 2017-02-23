@@ -1,0 +1,494 @@
+package hr.fer.zemris.java.cstr;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
+import hr.fer.zemris.java.cstr.CString;
+
+public class CStringTests {
+
+	@Test(expected = NullPointerException.class)
+	public void testNullValueInput() {
+		char[] value = null;
+		// must throw!
+		new CString(value);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testNullValueInputInConstructorUsingAllFields() {
+		char[] value = null;
+		// must throw!
+		new CString(value, 1, 2);
+	}
+
+	@Test(expected = IndexOutOfBoundsException.class)
+	public void testNegativeOffsetInput() {
+		char[] value = { 'k', 'u', 'd', 'a' };
+		int offset = -3;
+		int count = 4;
+		// must throw!
+		new CString(value, offset, count);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testToBigCountInput() {
+		char[] value = { 'k', 'u', 'd', 'a' };
+		int offset = 2;
+		int count = 3;
+		// must throw!
+		new CString(value, offset, count);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testNegativeCountInput() {
+		char[] value = { 'k', 'u', 'd', 'a' };
+		int offset = 2;
+		int count = -2;
+		// must throw!
+		new CString(value, offset, count);
+	}
+
+	@Test
+	public void testNotNull() {
+		CString cstr = CString.fromString(new String(""));
+
+		assertNotNull("Char array was expected but null pointer was returned.",
+				cstr.toCharArray());
+	}
+
+	@Test(expected = IndexOutOfBoundsException.class)
+	public void testEmptyStringCharAtIndexAccess() {
+		CString cstr = CString.fromString(new String(""));
+
+		cstr.charAt(0);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testNullInputInConstructorFromCString() {
+		CString cstr = null;
+		CString cstr2 = new CString(cstr);
+	}
+
+	@Test
+	public void testNotNullInputInConstructorFromCString() {
+
+		char[] value = { 'k', 'u', 'd', 'a' };
+		int offset = 1;
+		int count = 2;
+		// must throw!
+		CString cstr = new CString(value, offset, count);
+		CString cstr2 = new CString(cstr);
+
+	}
+
+	@Test
+	public void testCreatingCStringsFromString() {
+
+		String str = new String("kako li je \\\\!");
+		CString check = new CString(str.toCharArray());
+		CString cstr = CString.fromString(str);
+
+		checkCStringArray(cstr, str);
+	}
+
+	@Test
+	public void testCreatingCStringsFromEmptyString() {
+
+		String str = new String("");
+		CString check = new CString(str.toCharArray());
+		CString cstr = CString.fromString(str);
+
+		checkCStringArray(cstr, str);
+	}
+
+	@Test
+	public void testEndWith() {
+
+		String str = new String("Zasto :))");
+		CString cstr = CString.fromString(str);
+		String ends = new String(":))");
+		CString cends = CString.fromString(ends);
+
+		assertEquals(cstr.endsWith(cends), true);
+	}
+	
+	@Test
+	public void endsWithOnCStringWithOffset() {
+		CString str = CString.fromString("Your job is to create a class");
+		int offset = 1;
+		int length = 5;
+		CString str2 = new CString(str.toCharArray(), offset, length);
+
+		assertEquals(true, str2.contains(CString.fromString(" j")));
+	}
+
+	@Test
+	public void testDoesntEndWith() {
+
+		String str = new String("Zasto :)");
+		CString cstr = CString.fromString(str);
+		String ends = new String(":))");
+		CString cends = CString.fromString(ends);
+
+		assertEquals(cstr.endsWith(cends), false);
+	}
+
+	@Test
+	public void testStartWith() {
+
+		String str = new String(":))Zasto :))");
+		CString cstr = CString.fromString(str);
+		String starts = new String(":))");
+		CString cstarts = CString.fromString(starts);
+
+		assertEquals(cstr.startsWith(cstarts), true);
+	}
+	
+	@Test
+	public void startsWithOnCStringWithOffset() {
+		CString str = CString.fromString("Your job is to create a class");
+		int offset = 1;
+		int length = 5;
+		CString str2 = new CString(str.toCharArray(), offset, length);
+
+		assertEquals(true, str2.contains(CString.fromString("our")));
+	}
+
+	@Test
+	public void testDoesntStartWith() {
+
+		String str = new String("Zasto :))");
+		CString cstr = CString.fromString(str);
+		String starts = new String(":))");
+		CString cstarts = CString.fromString(starts);
+
+		assertEquals(cstr.startsWith(cstarts), false);
+	}
+
+	@Test
+	public void testContains() {
+
+		String str = new String(":))Zasto :))");
+		CString cstr = CString.fromString(str);
+		String starts = new String(":))");
+		CString cstarts = CString.fromString(starts);
+
+		assertEquals(cstr.contains(cstarts), true);
+		assertEquals(cstr.contains(CString.fromString(new String("Za"))), true);
+	}
+
+	@Test
+	public void testDoesntContains() {
+
+		String str = new String("Zasto :)");
+		CString cstr = CString.fromString(str);
+		String starts = new String(":))");
+		CString cstarts = CString.fromString(starts);
+
+		assertEquals(cstr.startsWith(cstarts), false);
+	}
+	
+	@Test
+	public void doesntContainsOnCStringWithOffset() {
+		CString str = CString.fromString("Your job is to create a class");
+		int offset = 1;
+		int length = 5;
+		CString str2 = new CString(str.toCharArray(), offset, length);
+
+		assertEquals(false, str2.contains(CString.fromString("orr")));
+	}
+	
+	@Test
+	public void containsOnCStringWithOffset() {
+		CString str = CString.fromString("Your job is to create a class");
+		int offset = 1;
+		int length = 5;
+		CString str2 = new CString(str.toCharArray(), offset, length);
+
+		assertEquals(true, str2.contains(CString.fromString("our")));
+	}
+
+	@Test
+	public void testSunstring() {
+
+		String str = new String(":))Zasto :))");
+		CString cstr = CString.fromString(str);
+
+		checkCStringArray(cstr.substring(3, 8), "Zasto");
+
+	}
+
+	@Test(expected = Exception.class)
+	public void testSubstringWithNegativeStartValue() {
+
+		String str = new String("Zasto :)");
+		CString cstr = CString.fromString(str);
+		cstr.substring(-3, 8);
+	}
+
+	@Test(expected = Exception.class)
+	public void testSubstringTooBigEndValueValue() {
+
+		String str = new String("Zasto :)");
+		CString cstr = CString.fromString(str);
+		cstr.substring(0, 50);
+	}
+
+	@Test
+	public void testSubstring() {
+
+		String str = new String(
+
+				"Your job is to create a class CString (put it in package hr.fe"
+						+ "r.zemris.java.cstr) which offers similar"
+						+ "functionality as the old official implementation of the"
+						+ " String class: it should represent unmodifiable strings"
+						+ "on which substring methods (and similar) must be executed"
+						+ " in O(1) complexity, which you can achieve by"
+						+ "sharing the character array. Here is the official list of "
+						+ "methods your CString must support");
+		CString cstr = CString.fromString(str);
+		CString substr = cstr.substring(0, 50);
+		assertEquals(substr.charAt(15), 'c');
+		assertEquals(substr.charAt(1), 'o');
+		checkCStringArray(substr.substring(0, 43),
+				"Your job is to create a class CString (put ");
+
+	}
+	
+	@Test
+	public void substringOnCStringWithOffset() {
+		CString str = CString.fromString("Your job is to create a class");
+		int offset = 1;
+		int length = 5;
+		CString str2 = new CString(str.toCharArray(), offset, length);
+
+		assertEquals(" j", str2.substring(3,5).toString());
+	}
+
+	@Test
+	public void testLeft() {
+
+		String str = new String(
+				"Your job is to create a class CString (put it in package hr.fe"
+						+ "r.zemris.java.cstr) which offers similar"
+						+ "functionality as the old official implementation of the"
+						+ " String class: it should represent unmodifiable strings"
+						+ "on which substring methods (and similar) must be executed"
+						+ " in O(1) complexity, which you can achieve by"
+						+ "sharing the character array. Here is the official list of "
+						+ "methods your CString must support");
+		CString cstr = CString.fromString(str);
+		CString substr = cstr.left(50);
+		assertEquals(substr.charAt(15), 'c');
+		assertEquals(substr.charAt(1), 'o');
+		checkCStringArray(substr.substring(0, 43),
+				"Your job is to create a class CString (put ");
+
+	}
+
+	@Test(expected = IndexOutOfBoundsException.class)
+	public void testLeftIndexN() {
+
+		String str = new String(
+
+				"Your job is to create a class CString (put it in package hr.fe"
+						+ "r.zemris.java.cstr) which offers similar"
+						+ "functionality as the old official implementation of the"
+						+ " String class: it should represent unmodifiable strings"
+						+ "on which substring methods (and similar) must be executed"
+						+ " in O(1) complexity, which you can achieve by"
+						+ "sharing the character array. Here is the official list of "
+						+ "methods your CString must support");
+		CString cstr = CString.fromString(str);
+		CString substr = cstr.left(50);
+		substr.charAt(50);
+
+	}
+	
+	@Test
+	public void leftOnCStringWithOffset() {
+		CString str = CString.fromString("Your job is to create a class");
+		int offset = 1;
+		int length = 5;
+		CString str2 = new CString(str.toCharArray(), offset, length);
+
+		assertEquals("our", str2.left(3).toString());
+	}
+
+	@Test
+	public void testRight() {
+
+		String str = new String(
+
+				"Your job is to create a class CString (put it in package hr.fe"
+						+ "r.zemris.java.cstr) which offers similar"
+						+ "functionality as the old official implementation of the"
+						+ " String class: it should represent unmodifiable strings"
+						+ "on which substring methods (and similar) must be executed"
+						+ " in O(1) complexity, which you can achieve by"
+						+ "sharing the character array. Here is the official list of "
+						+ "methods your CString must support");
+		CString cstr = CString.fromString(str);
+		checkCStringArray(cstr.right(43),
+				"l list of methods your CString must support");
+
+	}
+	
+	@Test
+	public void rightOnCStringWithOffset() {
+		CString str = CString.fromString("Your job is to create a class");
+		int offset = 1;
+		int length = 5;
+		CString str2 = new CString(str.toCharArray(), offset, length);
+
+		assertEquals("j", str2.right(1).toString());
+	}
+	
+	@Test(expected = IndexOutOfBoundsException.class)
+	public void rightNegativeIndex() {
+		char[] a = new char[] { 'K', 'a', 'p', 'k', 'o' };
+		int offset = 1;
+		int length = 4;
+		CString str = new CString(a, offset, length);
+		CString str2 = new CString(a, offset, length);
+
+		assertEquals(str2, str.right(-1));
+	}
+
+	@Test
+	public void testAdd() {
+
+		String str = new String(
+
+				"Your job is to create a class CString (put it in package hr.fe"
+						+ "r.zemris.java.cstr) which offers similar"
+						+ "functionality as the old official implementation of the"
+						+ " String class: it should represent unmodifiable strings"
+						+ "on which substring methods (and similar) must be executed"
+						+ " in O(1) complexity, which you can achieve by"
+						+ "sharing the character array. Here is the official list of "
+						+ "methods your CString must support");
+		CString cstr = CString.fromString(str);
+		CString left = cstr.left(43);
+		CString right = CString.fromString("Tava");
+		checkCStringArray(left.add(right),
+				"Your job is to create a class CString (put Tava");
+
+	}
+	
+	@Test
+	public void addToStringWithOffset() {
+		char[] a = new char[] { 'K', 'l', 'a', 'c', 'k','o' };
+		int offset = 1;
+		int length = 3;
+		CString left = new CString(a, offset, length);
+		CString right = new CString(a, 4, 2);
+		
+		assertEquals("lacko", left.add(right).toString());
+	}
+
+	@Test
+	public void testAdd2() {
+
+		String str = new String(
+
+				"Your job is to create a class CString (put it in package hr.fe"
+						+ "r.zemris.java.cstr) which offers similar"
+						+ "functionality as the old official implementation of the"
+						+ " String class: it should represent unmodifiable strings"
+						+ "on which substring methods (and similar) must be executed"
+						+ " in O(1) complexity, which you can achieve by"
+						+ "sharing the character array. Here is the official list of "
+						+ "methods your CString must support");
+		CString cstr = CString.fromString(str);
+		CString left = cstr.left(43);
+		CString right = cstr.right(43);
+		checkCStringArray(left.add(right),
+				"Your job is to create a class CString (put l"
+						+ " list of methods your CString must support");
+
+	}
+
+	@Test
+	public void testReplaceAllChars() {
+		String str = new String(
+
+				"Your job is to create a class CString (put it in package hr.fe"
+						+ "r.zemris.java.cstr) which offers similar"
+						+ "functionality as the old official implementation of the"
+						+ " String class: it should represent unmodifiable strings"
+						+ "on which substring methods (and similar) must be executed"
+						+ " in O(1) complexity, which you can achieve by"
+						+ "sharing the character array. Here is the official list of "
+						+ "methods your CString must support");
+		CString cstr = CString.fromString(str);
+		String replaceString = str.replace('c', 'H');
+
+		checkCStringArray(cstr.replaceAll('c', 'H'), replaceString);
+	}
+
+	@Test
+	public void testReplaceAllStrings() {
+		String str = new String(
+
+				"Your job is to create a class CString (put it in package hr.fe"
+						+ "r.zemris.java.cstr) which offers similar"
+						+ "functionality as the old official implementation of the"
+						+ " String class: it should represent unmodifiable strings"
+						+ "on which substring methods (and similar) must be executed"
+						+ " in O(1) complexity, which you can achieve by"
+						+ "sharing the character array. Here is the official list of "
+						+ "methods your CString must support");
+		CString cstr = CString.fromString(str);
+		String replaceString = str.replaceAll("c", "HHH");
+
+		checkCStringArray(cstr.replaceAll(CString.fromString("c"),
+				CString.fromString("HHH")), replaceString);
+	}
+	
+	@Test
+	public void replaceAllStringOnCStringWithOffset() {
+		String test = "Your job is to create a class";
+		CString str = CString.fromString("Your job is to create a class");
+		int offset = 1;
+		int length = 5;
+		CString str2 = new CString(str.toCharArray(), offset, length);
+
+		assertEquals(true, str2.contains(CString.fromString("our")));
+	}
+
+	@Test
+	public void testReplaceAllWithNoCOntent() {
+		String str = new String(
+
+				"Your job is to create a class CString (put it in pac");
+		CString cstr = CString.fromString(str);
+		String replaceString = str.replaceAll("", "K");
+
+		checkCStringArray(cstr.replaceAll(CString.fromString(""),
+				CString.fromString("K")), replaceString);
+	}
+
+	// Helper method for checking if CString generates the same stream CharArray
+	// // as the given String.
+	private void checkCStringArray(CString actual, String expected) {
+		String msg = "Checking sting " + ":";
+		char[] actualArray = actual.toCharArray();
+		char[] expectedArray = expected.toCharArray();
+
+		System.out.print(actualArray);
+		System.out.println(" \n lenght:" + actual.length());
+		System.out.print(expectedArray);
+		System.out.println(" \n length:" + expected.length());
+
+		for (int i = 0; i < actualArray.length; ++i) {
+			assertEquals(msg, expectedArray[i], actualArray[i]);
+			assertEquals(msg, expected.length(), actual.length());
+		}
+	}
+
+}

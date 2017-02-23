@@ -1,0 +1,19 @@
+/**
+ * 
+ */
+package hr.fer.zemris.java.graphics.shapes;
+
+import hr.fer.zemris.java.graphics.raster.BWRaster;
+
+/**
+ * Root of geometric shapes inheritance tree.
+ * 
+ * @author Mia FIlić
+ *
+ */
+public abstract class GeometricShape {
+	
+	public void draw(BWRaster r){
+		
+	}
+}

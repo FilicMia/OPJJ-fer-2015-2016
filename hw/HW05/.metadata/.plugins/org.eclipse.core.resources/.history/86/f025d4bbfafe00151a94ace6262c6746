@@ -1,0 +1,109 @@
+/**
+ * 
+ */
+package hr.fer.zemris.java.tecaj.hw5.collections;
+
+/**
+ * Generic hash table which allows which allows storage of ordered pairs ( key ,
+ * value ). Type of parameter key is defined by K, type of parameter value is
+ * defined with V.
+ * 
+ * This implementation is in accordance with the overflow policy in concatenated
+ * list . Therefore, the number of ordered pairs ( key , value ) that are stored
+ * in this collection can be greater than the number of slots table. The
+ * implementation of this class does not allow keys to be null references ;
+ * values ​​, however, can be a null reference .
+ * 
+ * @author Mia Filić
+ * @version 1.0
+ * 
+ * @param <K>
+ *            type of key value of ordered pair
+ * @param <V>
+ *            type of value value of ordered pair
+ */
+public class SimpleHashtable<K, V> {
+	/** Default number of slots in {@code SimpleHashtable} . */
+	private static final int DEFAULT_SLOTS = 16;
+
+	/**
+	 * Private static constant used in constructor for defining number of slots.
+	 */
+	private static final int TWO = 2;
+
+	/** Array of slots of the hash table */
+	TableEntry<K, V> table[];
+	/** Number of currently stored pairs <key, value> */
+	int size = 0;
+
+	/**
+	 * The slot of the hash table.
+	 * 
+	 * Copies of this class have a membership key variable in which to remember
+	 * dedicated key , a membership value variable in which to remember the
+	 * assigned value of the membership variable next to indicates the next copy
+	 * grades TableEntry < K , V > , located in the same slot of the plate (
+	 * construction this list will be dealt overflow problem - situations where
+	 * the same slot should enroll more ordered pairs ) . These all member
+	 * variables should be private .
+	 * 
+	 * @author Mia Filić
+	 *
+	 * @param <K>
+	 *            type of key value of ordered pair
+	 * @param <V>
+	 *            type of value value of ordered pair
+	 */
+	public static class TableEntry<K, V> {
+		// <K,V> are not the samo as the K,V in wrapped class
+		/**
+		 * The key of ordered pair.
+		 */
+		K key;
+		
+		/**
+		 * The value {@code value} of ordered pair.
+		 */
+		V value;
+		
+		/**Pointer to the next {@code TableEntry} instance in the same slot.*/
+
+	}
+
+	/**
+	 * Constructor which creates hash table with number of slots equal to the
+	 * closest power of {@code TWO} greater or equal to {@code slots}.
+	 * 
+	 * @param slots
+	 *            number of desirable number of slots in hash table.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if parametar {@code slots} is smaller than 1.
+	 */
+	@SuppressWarnings("unchecked")
+	public SimpleHashtable(int slots) {
+		if (size < 1) {
+			throw new IllegalArgumentException(
+					"Number of slots must be grater than one.");
+		}
+		int size = (int) Math.ceil(Math.log(slots) / Math.log(TWO));
+		size = (int) Math.pow(TWO, size);
+
+		table = (TableEntry<K, V>[]) new TableEntry[size];
+
+	}
+
+	/**
+	 * Default constructor which creates hash table with default number of slots
+	 * ({@code noSlots}).
+	 */
+	public SimpleHashtable() {
+		this(DEFAULT_SLOTS);
+	}
+
+	public void put(String string, int i) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

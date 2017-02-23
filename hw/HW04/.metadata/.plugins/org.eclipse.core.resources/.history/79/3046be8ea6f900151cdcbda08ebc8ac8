@@ -1,0 +1,13 @@
+package hr.fer.zemris.java.cstr;
+
+public class Demo {
+
+	@SuppressWarnings("javadoc")
+	public static void main(String[] args) {
+		String data = "";
+		String str = new String(data);
+		str = new String("ababab").replaceAll(new String("ab"), new String("abab"));
+		System.out.println(str);
+	}
+
+}

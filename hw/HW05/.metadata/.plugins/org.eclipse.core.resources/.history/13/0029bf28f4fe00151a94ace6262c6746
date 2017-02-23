@@ -1,0 +1,20 @@
+/**
+ * 
+ */
+package hr.fer.zemris.java.tecaj.hw5.collections;
+
+/**
+ * Java Generic hash table which allows which allows storage of ordered pairs ( key , value
+ * ). Type of parameter key is K, type of parameter value is V.
+ * 
+ * @author Mia Filić
+ * @version 1.0
+ */
+public class SimpleHashtable<K, V> {
+
+	public void put(String string, int i) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

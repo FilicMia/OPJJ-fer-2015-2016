@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="java.lang.StringBuffer"/>
+<fullyQualifiedTypeName name="java.lang.IllegalAccessError"/>
+<fullyQualifiedTypeName name="java.lang.String"/>
+<fullyQualifiedTypeName name="javax.swing.plaf.basic.BasicScrollPaneUI.VSBChangeListener"/>
+<fullyQualifiedTypeName name="java.lang.IllegalAccessException"/>
+<fullyQualifiedTypeName name="java.util.Arrays"/>
+<fullyQualifiedTypeName name="org.junit.Test"/>
+<fullyQualifiedTypeName name="java.lang.Math"/>
+<fullyQualifiedTypeName name="javax.swing.plaf.nimbus.AbstractRegionPainter"/>
+<fullyQualifiedTypeName name="hr.fer.zemris.java.graphics.shapes.AbstaractRectangle"/>
+<fullyQualifiedTypeName name="hr.fer.zemris.java.graphics.shapes.AbstractEllipse"/>
+<fullyQualifiedTypeName name="java.lang.StringBuilder"/>
+<fullyQualifiedTypeName name="hr.fer.zemris.java.graphics.views.StringRasterView"/>
+<fullyQualifiedTypeName name="hr.fer.zemris.java.graphics.views.RasterView"/>
+<fullyQualifiedTypeName name="hr.fer.zemris.java.graphics.views.SimpleRasterView"/>
+<fullyQualifiedTypeName name="java.lang.Integer"/>
+<fullyQualifiedTypeName name="java.lang.NumberFormatException"/>
+<fullyQualifiedTypeName name="hr.fer.zemris.java.graphics.raster.BWRasterMem"/>
+<fullyQualifiedTypeName name="hr.fer.zemris.java.graphics.views.UserInputHandler"/>
+<fullyQualifiedTypeName name="java.io.InputStreamReader"/>
+<fullyQualifiedTypeName name="java.lang.Exception"/>
+<fullyQualifiedTypeName name="hr.fer.zemris.java.graphics.shapes.GeometricShapesTest"/>
+<fullyQualifiedTypeName name="hr.fer.zemris.java.graphics.shapes.GeometricShapeType"/>
+<fullyQualifiedTypeName name="hr.fer.zemris.java.graphics.shapes.Rectangle"/>
+<fullyQualifiedTypeName name="hr.fer.zemris.java.graphics.shapes.Square"/>
+<fullyQualifiedTypeName name="java.util.Scanner"/>
+<fullyQualifiedTypeName name="java.util.InputMismatchException"/>
+<fullyQualifiedTypeName name="java.awt.Rectangle"/>
+<fullyQualifiedTypeName name="java.lang.IllegalArgumentException"/>
+<fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="hr.fer.zemris.java.graphics.raster.BWRaster"/>
+<fullyQualifiedTypeName name="hr.fer.zemris.java.graphics.shapes.GeometricShape"/>
+<fullyQualifiedTypeName name="hr.fer.zemris.java.cstr.CString"/>
+<fullyQualifiedTypeName name="org.junit.Ignore"/>
+<fullyQualifiedTypeName name="java.lang.IndexOutOfBoundsException"/>
+<fullyQualifiedTypeName name="java.lang.NullPointerException"/>
+</qualifiedTypeNameHistroy>

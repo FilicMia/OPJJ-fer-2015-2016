@@ -1,0 +1,36 @@
+			load r0, @counter		
+			load r1, @zero		
+			load r7, @begin		
+			load r6, @end
+			load r8, @newLine
+			load r9, @wrongInput
+			
+@loop0:		echo r7			
+			iinput 64;	
+			jumpIfTrue @alocate	
+			echo r9	
+			jump @loop0
+			
+@alocate:	move r5, 64
+			move r5, [r5+0]
+			echo r6
+@loop1:	testEquals r0, r1		
+			jumpIfTrue @done	
+			decrement r0		
+			increment r5
+			echo r5	
+			echo r8
+			jump @loop1		
+@done:	halt				
+
+#
+
+@begin:	DEFSTR "Upisi početni broj:\n"	
+@end: DEFSTR "Sljedećih 5 brojeva je:\n"
+@wrongInput: DEFSTR "Unos nije moguće protumačiti kao cijeli broj.\n"
+@counter:	DEFINT 5			
+@zero:		DEFINT 0			
+@newLine: DEFSTR "\n"
+
+			RESERVE:80
+@stackTop:	RESERVE

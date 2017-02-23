@@ -1,0 +1,54 @@
+package hr.fer.zemris.java.custom.scripting.nodes;
+
+/**
+ * (Class) Node representing a entire document.
+ * It inherits form <code>Node</code>
+ * @author mia
+ *
+ */
+public class DocumentNode extends Node{
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString(){
+		String documentBody = "";
+		documentBody = createStringTree(documentBody, this, "");
+		return documentBody;
+		}
+	
+	/**
+	 * Creates a tree structure of {@link Node}s for better visualization of the
+	 * parsing process.
+	 * 
+	 * @param documentBody
+	 *            string representing the current structure of the tree
+	 * @param document
+	 *            parsed tree structure
+	 * @param tab
+	 *            used to indent child {@link Node}s
+	 * @return string representing tree structure
+	 */
+	private static String createStringTree(String documentBody, final Node document, final String tab) {
+		if (document instanceof DocumentNode) {
+			documentBody += tab + "DocumentNode\n";
+		} else if (document instanceof ForLoopNode) {
+			documentBody += tab + "ForLoopNode\n";
+
+		} else if (document instanceof EchoNode) {
+			documentBody += tab + "EchoNode\n";
+
+		} else {
+			documentBody += tab + "TextNode\n";
+		}
+
+		for (int i = 0, size = document.numberOfChildren(); i < size; i++) {
+			documentBody = createNodeStructure(documentBody, document.getChild(i), tab + "\t");
+		}
+
+		return documentBody;
+	}
+
+}
+

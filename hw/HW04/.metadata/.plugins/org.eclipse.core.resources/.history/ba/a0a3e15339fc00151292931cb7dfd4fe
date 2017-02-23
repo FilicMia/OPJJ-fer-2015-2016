@@ -1,0 +1,19 @@
+package hr.fer.zemris.java.graphics.shapes;
+
+import java.util.Scanner;
+
+public class Test {
+
+	public static void main(String[] args) {
+		Square rectangle = new Square(2, 3, 1);
+		System.out.println(rectangle.getHeight());
+		Scanner sc = new Scanner(System.in);
+		while (sc.hasNextLine()) {
+			// s prazninama je true
+			System.out.println(sc.hasNextInt());
+			System.out.println(sc.nextInt());
+		}
+
+	}
+
+}

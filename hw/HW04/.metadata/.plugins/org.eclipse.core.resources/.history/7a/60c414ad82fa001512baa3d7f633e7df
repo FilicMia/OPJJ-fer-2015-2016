@@ -1,0 +1,14 @@
+/**
+ * 
+ */
+package hr.fer.zemris.java.graphics.shapes;
+
+/**
+ * Root of geometric shapes inheritance tree.
+ * 
+ * @author Mia FIlić
+ *
+ */
+public abstract class GeometricShape {
+
+}

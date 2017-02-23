@@ -1,0 +1,56 @@
+package hr.fer.zemris.java.tecaj.hw5.db;
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+/**
+ * Analyzes the IndexQuery.
+ * 
+ * @author Mia FIlić
+ *
+ */
+public class IndexQueryAnalyzer {
+
+	/**
+	 * Analyzes the IndexQuery.
+	 * 
+	 * @param query
+	 *            query
+	 * @param database
+	 *            Student database in which to check for the query
+	 * @return record of corresponding student
+	 * @throws InputMismatchException
+	 *             if illegal query is read
+	 * @throws NullPointerException
+	 *             if null arguments passed
+	 * 
+	 */
+	public static StudentRecord indexQueryAnalyzer(String query,
+			StudentDatabase database) {
+		if (query == null || database == null) {
+			throw new NullPointerException();
+		}
+
+		String line = query.trim();
+		line = line.replaceAll("=", " = ").trim();
+		String parts[] = line.split(" ");
+		StudentRecord record = null;
+
+		if (parts.length == 3) {
+			System.out.println(line);
+			if (parts[0].equals("jmbag") && parts[1].equals("=")) {
+				if (!parts[2].startsWith("\"") || !parts[2].endsWith("\"")) {
+					throw new InputMismatchException("Invalid input stream.");
+				}
+				return record = database.forJMBAG(parts[2]);
+			} else {
+				throw new InputMismatchException("Invalid input stream.");
+			}
+
+		} else {
+			throw new InputMismatchException("Invalid input stream.");
+		}
+
+	}
+
+}

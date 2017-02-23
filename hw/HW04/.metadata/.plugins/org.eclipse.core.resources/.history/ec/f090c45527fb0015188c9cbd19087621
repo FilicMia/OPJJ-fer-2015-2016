@@ -1,0 +1,44 @@
+/**
+ * 
+ */
+package hr.fer.zemris.java.graphics.shapes;
+
+/**
+ * Implements the geometric shape ellipse. Each ellipse is
+ * specified by its center and horizontal and vertical radius.
+ * Circle is considered to be special form of ellipse.
+ * 
+ * @author Mia Filić
+ *
+ */
+public abstract class AbstractEllipse extends GeometricShape {
+	/** x coordinate of the ellipse center. */
+	int x;
+	/** y coordinate of the ellipse center. */
+	int y;
+	/** Horizontal radius. */
+	int hRadius;
+	/** Vertical radius. */
+	int vRadius;
+
+	/**
+	 * Constructor that sets the properties on given values.
+	 * 
+	 * @param x
+	 *            x coordinate of the ellipse center
+	 * @param y
+	 *            y coordinate of the ellipse center
+	 * @param hRadius
+	 *            Horizontal radius
+	 * @param vRadius
+	 *            Vertical radius
+	 */
+	public AbstractEllipse(int x, int y, int hRadius, int vRadius) {
+		super();
+		this.x = x;
+		this.y = y;
+		this.hRadius = hRadius;
+		this.vRadius = vRadius;
+	}
+
+}

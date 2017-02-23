@@ -1,0 +1,357 @@
+package hr.fer.zemris.java.cstr;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
+public class Tests2 {
+	@Ignore	@Test
+	public void testNotNull() {
+		CString novi = new CString(new char[] { 'M', 'a', 'r', 'k', 'o' });
+
+		assertEquals(5, novi.length());
+		assertEquals(novi.toString(), "Marko");
+	}
+
+	@Ignore	@Test
+	public void testEmpty() {
+		CString novi = new CString(new char[] {});
+
+		assertEquals(0, novi.length());
+	}
+
+	@Ignore	@Test(expected = NullPointerException.class)
+	public void testNull() {
+		char[] a = null;
+		CString novi = new CString(a);
+		// must throw
+
+	}
+
+	@Ignore	@Test(expected = IndexOutOfBoundsException.class)
+	public void wrongOffset() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o' };
+		CString novi = new CString(a, 5, 2);
+		// must throw
+
+	}
+
+	@Ignore	@Test
+	public void testNormalConstructor() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o' };
+		int offset = 2;
+		int length = 2;
+		CString novi = new CString(a, offset, length);
+
+		assertEquals(2, novi.length());
+		assertEquals("rk", novi.toString());
+	}
+
+	@Ignore	@Test
+	public void constructorFromCString() {
+		CString stari = new CString(new char[] { 'M', 'a', 'r', 'k', 'o' });
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o' };
+		int offset = 2;
+		int length = 2;
+		CString stari2 = new CString(a, offset, length);
+
+		CString novi = new CString(stari);
+		CString novi2 = new CString(stari2);
+
+		assertEquals(5, novi.length());
+		assertEquals(2, novi2.length());
+
+	}
+
+	@Ignore	@Test
+	public void fromString() {
+		String stari = "StariString";
+		CString novi = CString.fromString(stari);
+
+		assertEquals(11, novi.length());
+		assertEquals("StariString", novi.toString());
+	}
+
+	@Ignore	@Test(expected = IndexOutOfBoundsException.class)
+	public void charAt() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o' };
+		int offset = 2;
+		int length = 2;
+		CString pomocni = new CString(a, offset, length);
+
+		assertEquals('r', pomocni.charAt(0));
+		// must throw
+		assertEquals('o', pomocni.charAt(2));
+	}
+
+	@Ignore	@Test
+	public void toCharArray() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o' };
+		int offset = 2;
+		int length = 2;
+		CString pomocni = new CString(a, offset, length);
+
+		char[] novi = pomocni.toCharArray();
+
+		assertEquals('r', novi[0]);
+		assertEquals('k', novi[1]);
+	}
+@Test
+	public void indexOf() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o' };
+		int offset = 1;
+		int length = 3;
+		CString pomocni = new CString(a, offset, length);
+
+		assertEquals(-1, pomocni.indexOf('R'));
+		assertEquals(1, pomocni.indexOf('r'));
+	}
+
+	@Test
+	public void startsWithTrue() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o' };
+		int offset = 1;
+		int length = 4;
+		CString pomocni = new CString(a, offset, length);
+		CString pomocni2 = new CString(a, offset, length - 2);
+
+		assertEquals(true, pomocni.startsWith(pomocni2));
+	}
+
+	@Ignore	@Test
+	public void startsWithFalse() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o' };
+		int offset = 1;
+		int length = 4;
+		CString pomocni = new CString(a, offset, length);
+		CString pomocni2 = new CString(a, offset + 1, length - 1);
+
+		assertEquals(false, pomocni.startsWith(pomocni2));
+	}
+
+	
+	@Ignore	@Test
+	public void endsWithTrue() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o' };
+		int offset = 1;
+		int length = 4;
+		CString pomocni = new CString(a, offset, length);
+		CString pomocni2 = new CString(a, offset + 1, length - 1);
+
+		assertEquals(true, pomocni.endsWith(pomocni2));
+	}
+
+	
+	@Ignore	@Test
+	public void endsWithFalse() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o' };
+		int offset = 1;
+		int length = 4;
+		CString pomocni = new CString(a, offset, length);
+		CString pomocni2 = new CString(a, offset, length - 1);
+
+		assertEquals(false, pomocni.endsWith(pomocni2));
+	}
+
+		@Test
+	public void containsTrue() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o', 'k', 'o' };
+		int offset = 1;
+		int length = 6;
+		CString pomocni = new CString(a, offset, length);
+		CString pomocni2 = new CString(a, offset, length - 2);
+
+		System.out.println(pomocni);
+		System.out.println(pomocni2);
+		assertEquals(true, pomocni.contains(pomocni2));
+	}
+	
+	
+	@Ignore	@Test
+	public void containsFalse() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o' };
+		int offset = 1;
+		int length = 4;
+		CString pomocni = new CString(a, offset, length);
+		CString pomocni2 = new CString(a, 0, 3);
+
+		assertEquals(false, pomocni.contains(pomocni2));
+	}
+
+	@Ignore	@Test(expected = IndexOutOfBoundsException.class)
+	public void substringThrowLosiIndeksi() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o' };
+		int offset = 1;
+		int length = 4;
+		CString pomocni = new CString(a, offset, length);
+
+		assertEquals(pomocni, pomocni.substring(1, 5));
+	}
+
+	@Ignore	@Test
+	public void substringPodStringoviSuJednaki() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o' };
+		int offset = 1;
+		int length = 4;
+		CString pomocni = new CString(a, offset, length);
+		CString pomocni2 = new CString(a, offset + 1, length - 2);
+
+		assertEquals(pomocni2.toString(), pomocni.substring(1, 3).toString());
+	}
+
+		@Test(expected = IndexOutOfBoundsException.class)
+	public void leftThrowIndexGraterThanLength() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o' };
+		int offset = 1;
+		int length = 4;
+		CString pomocni = new CString(a, offset, length);
+		CString pomocni2 = new CString(a, offset, length);
+
+		assertEquals(pomocni2, pomocni.left(5));
+	}
+
+	@Ignore	@Test
+	public void left() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o' };
+		int offset = 1;
+		int length = 4;
+		CString pomocni = new CString(a, offset, length);
+		CString pomocni2 = new CString(a, offset, 2);
+
+		assertEquals(pomocni2.toString(), pomocni.left(2).toString());
+	}
+
+		@Test(expected = IndexOutOfBoundsException.class)
+	public void rightThrowIndexGraterThanLength() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o' };
+		int offset = 1;
+		int length = 4;
+		CString pomocni = new CString(a, offset, length);
+		CString pomocni2 = new CString(a, offset, length);
+
+		assertEquals(pomocni2, pomocni.right(-1));
+	}
+
+	@Ignore	@Test
+	public void right() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o' };
+		int offset = 1;
+		int length = 4;
+		CString pomocni = new CString(a, offset, length);
+
+		assertEquals("o", pomocni.right(1).toString());
+	}
+
+	@Test
+	public void add() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o' };
+		int offset = 1;
+		int length = 3;
+		CString pomocni = new CString(a, offset, length);
+		CString pomocni2 = new CString(a, offset, 2);
+
+		assertEquals("arkar", pomocni.add(pomocni2).toString());
+	}
+
+	@Ignore	@Test
+	public void add2() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o' };
+		int offset = 0;
+		int length = 5;
+		CString pomocni = new CString(a, offset, length);
+		CString pomocni2 = new CString(a, offset, length - 2);
+
+		assertEquals("MarMarko", pomocni2.add(pomocni).toString());
+	}
+
+	@Ignore	@Test
+	public void replaceAllChar() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o', 'k', 'o' };
+		int offset = 0;
+		int length = 7;
+		CString pomocni = new CString(a, offset, length);
+
+		char oldChar = 'a';
+		char newChar = 'p';
+
+		assertEquals("Mprkoko", pomocni.replaceAll(oldChar, newChar).toString());
+	}
+
+	@Ignore	@Test
+	public void replaceAllCharNoChanges() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o', 'k', 'o' };
+		int offset = 0;
+		int length = 7;
+		CString pomocni = new CString(a, offset, length);
+
+		char oldChar = 'e';
+		char newChar = 'p';
+
+		assertEquals("Markoko", pomocni.replaceAll(oldChar, newChar).toString());
+	}
+
+	@Ignore	@Test
+	public void replaceAllCharMultipleExchanges() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o', 'k', 'o' };
+		int offset = 0;
+		int length = 7;
+		CString pomocni = new CString(a, offset, length);
+
+		char oldChar = 'k';
+		char newChar = 'o';
+
+		assertEquals("Maroooo", pomocni.replaceAll(oldChar, newChar).toString());
+	}
+
+	@Ignore	@Test
+	public void replaceAllCharReplaceAll() {
+		char[] a = new char[] { 'a', 'a', 'a', 'a', 'a', 'a', 'a' };
+		int offset = 0;
+		int length = 7;
+		CString pomocni = new CString(a, offset, length);
+
+		char oldChar = 'a';
+		char newChar = 'o';
+
+		assertEquals("ooooooo", pomocni.replaceAll(oldChar, newChar).toString());
+	}
+
+	@Ignore	@Test
+	public void replaceAllStrings() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o', 'k', 'o' };
+		int offset = 0;
+		int length = 7;
+		CString pomocni = new CString(a, offset, length);
+		CString oldStr = new CString(new char[] { 'k', 'o' });
+		CString newStr = new CString(new char[] { 'k', 'i' });
+
+		assertEquals("Markiki", pomocni.replaceAll(oldStr, newStr).toString());
+	}
+
+	@Ignore	@Test
+	public void replaceAllStringsNoChanges() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o', 'k', 'o' };
+		int offset = 0;
+		int length = 7;
+		CString pomocni = new CString(a, offset, length);
+		CString oldStr = new CString(new char[] { 'k', 'u' });
+		CString newStr = new CString(new char[] { 'k', 'i' });
+
+		assertEquals("Markoko", pomocni.replaceAll(oldStr, newStr).toString());
+	}
+
+	@Ignore	@Test
+	public void replaceAllStringsEverything() {
+		char[] a = new char[] { 'M', 'a', 'r', 'k', 'o', 'k', 'o' };
+		int offset = 0;
+		int length = 7;
+		CString pomocni = new CString(a, offset, length);
+		CString oldStr = new CString(new char[] { 'M', 'a', 'r', 'k', 'o', 'k', 'o' });
+		CString newStr = new CString(new char[] { 'k', 'i' });
+
+		
+		assertEquals("ki", pomocni.replaceAll(oldStr, newStr).toString());
+	}
+
+}

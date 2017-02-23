@@ -1,0 +1,124 @@
+package hr.fer.zemris.java.tecaj.hw5.db;
+
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Scanner;
+
+import org.junit.runners.model.Annotatable;
+
+import hr.fer.zemris.java.tecaj.hw5.db.QueryAnalyzer.*;
+
+import hr.fer.zemris.java.custom.collections.ObjectStack;
+
+/*public class QueryQueryAnalyzer {
+	switch (comparison) {
+	case (QueryAnalyzer.STRICTLYLESS_SIGN):
+		
+		break;
+	case (QueryAnalyzer.LESS_SIGN):
+
+		break;
+	case (QueryAnalyzer.GREATER_SIGN):
+
+		break;
+	case (QueryAnalyzer.STRICTLYGREATER_SIGN):
+
+		break;
+	case (QueryAnalyzer.EQUAL_SIGN):
+
+		break;
+	case (QueryAnalyzer.NOTEQUAL_SIGN):
+
+		break;
+
+	}
+}*/
+
+/**
+ * Analyzes the Query query.
+ * 
+ * @author Mia FIlić
+ *
+ */
+public class QueryQueryAnalyzer {
+
+	/**
+	 * Analyzes the IndexQuery.
+	 * 
+	 * @param query
+	 *            query
+	 * @param database
+	 *            Student database in which to check for the query
+	 * @return record of corresponding student
+	 * @throws InputMismatchException
+	 *             if illegal query is read
+	 * @throws NullPointerException
+	 *             if null arguments passed
+	 * 
+	 */
+	public static List<StudentRecord> queryQueryAnalyzer(String query,
+			StudentDatabase database) {
+		if (query == null || database == null) {
+			throw new NullPointerException();
+		}
+
+		String line = query.trim();
+		String parts[] = null;
+		parts = line.split("(?i)and");
+
+		StudentRecord record = null;
+		// prvo dobimo sve do 1 and pa do drugog end pa do treceg end itd.
+		// mozemo i sve dobiti pa raditi presijek...
+		System.out.println(line);
+		//vrati listu stringova nad kojom inicijal database.		
+		for(String simpleQuery:parts){
+			database = new StudentDatabase(oneSimpleQueryAnalyzer(simpleQuery));
+		}
+		return database.getAll();
+
+	}
+
+	/**
+	 * Analyzes the simple query and returns records that satisfied given query.
+	 * When talking about simple query we think about the query with fixed
+	 * structure: [property_name, comparison_operator_sign/s, value_of_property]
+	 * 
+	 * @param simpleQuery
+	 *            string representing simple query
+	 * @return list of student's records satisfying given query
+	 */
+	public static List<String> oneSimpleQueryAnalyzer(
+			String simpleQuery) {
+		if(simpleQuery == null || simpleQuery.isEmpty()){
+			throw new IllegalArgumentException("Invalid input stream.");
+		}
+		List<String> list = new ArrayList<>();
+		String parts[] = null;
+		
+		String line = simpleQuery.trim();
+		String lineBefore = line;
+		line = line.replaceAll(QueryAnalyzer.NOTEQUAL_SIGN,
+				" " + QueryAnalyzer.NOTEQUAL_SIGN + " ").trim();
+		line = line.replaceAll(QueryAnalyzer.STRICTLYLESS_SIGN,
+				" " + QueryAnalyzer.STRICTLYLESS_SIGN + " ").trim();
+		line = line.replaceAll(QueryAnalyzer.STRICTLYGREATER_SIGN,
+				" " + QueryAnalyzer.STRICTLYGREATER_SIGN + " ").trim();
+		line = line.replaceAll(QueryAnalyzer.EQUAL_SIGN,
+				" " + QueryAnalyzer.EQUAL_SIGN + " ").trim();
+		line = line.replaceAll(QueryAnalyzer.STRICTLYLESS_SIGN+" "+QueryAnalyzer.EQUAL_SIGN , QueryAnalyzer.LESS_SIGN);
+		line = line.replaceAll(QueryAnalyzer.STRICTLYGREATER_SIGN+" "+QueryAnalyzer.EQUAL_SIGN , QueryAnalyzer.GREATER_SIGN);
+		line = line.replaceAll("!"+" "+QueryAnalyzer.EQUAL_SIGN,QueryAnalyzer.NOTEQUAL_SIGN);
+		
+		parts = line.split("[ ]+");
+		
+		if (parts.length == 3) {
+			//switch()
+
+		} else {
+			throw new InputMismatchException("Invalid input stream.");
+		}
+		
+	}
+
+}

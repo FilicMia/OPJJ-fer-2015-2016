@@ -1,0 +1,213 @@
+package hr.fer.zemris.java.tecaj.hw5.db.filter;
+
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.List;
+
+import hr.fer.zemris.java.tecaj.hw5.db.ConditionalExpression;
+import hr.fer.zemris.java.tecaj.hw5.db.QueryAnalyzer;
+import hr.fer.zemris.java.tecaj.hw5.db.StudentRecord;
+import hr.fer.zemris.java.tecaj.hw5.db.coperator.Equal;
+import hr.fer.zemris.java.tecaj.hw5.db.coperator.Greater;
+import hr.fer.zemris.java.tecaj.hw5.db.coperator.Less;
+import hr.fer.zemris.java.tecaj.hw5.db.coperator.Like;
+import hr.fer.zemris.java.tecaj.hw5.db.coperator.NotEqual;
+import hr.fer.zemris.java.tecaj.hw5.db.coperator.StrictlyGreater;
+import hr.fer.zemris.java.tecaj.hw5.db.coperator.StrictlyLess;
+import hr.fer.zemris.java.tecaj.hw5.vgetter.GetFirstName;
+import hr.fer.zemris.java.tecaj.hw5.vgetter.GetJmbag;
+import hr.fer.zemris.java.tecaj.hw5.vgetter.GetLastName;
+import hr.fer.zemris.java.tecaj.hw5.vgetter.IFieldValueGetter;
+
+/**
+ * Filters the data due to the stored query.
+ * 
+ * @author Mia Filić
+ *
+ */
+public class QueryFilter implements IFilter {
+	/** List of expressions that record must satisfied to be accepted. */
+	List<ConditionalExpression> expressions;
+
+	/**
+	 * Constructor. Analyzes the query and sets the expression list.
+	 * 
+	 * @param query
+	 *            query
+	 * @throws NullPointerException
+	 *             if null arguments passed
+	 * 
+	 */
+	public QueryFilter(String query) {
+		if (query == null) {
+			throw new NullPointerException();
+		}
+		expressions = new ArrayList<>();
+
+		String line = query.trim();
+		String parts[] = null;
+		parts = line.split(" (?i)and ");
+
+		for (String simpleQuery : parts) {
+			System.out.println("query in query filter "+simpleQuery);
+			ConditionalExpression exp = oneSimpleQueryAnalyzer(
+					simpleQuery.trim());
+			expressions.add(exp);
+		}
+
+	}
+
+	/**
+	 * Analyzes the simple query and returns records that satisfied given query.
+	 * When talking about simple query we think about the query with fixed
+	 * structure: [property_name, comparison_operator_sign/s, value_of_property]
+	 * 
+	 * @param simpleQuery
+	 *            string representing simple query
+	 * @return list of student's records satisfying given query
+	 * @throws InputMismatchException
+	 *             if query is wrong
+	 */
+	public static ConditionalExpression oneSimpleQueryAnalyzer(
+			String simpleQuery) {
+		if (simpleQuery == null || simpleQuery.isEmpty()) {
+			throw new InputMismatchException("Invalid input stream.");
+		}
+
+		String parts[] = null;
+
+		String line = simpleQuery.trim();
+		line = line.replaceAll(QueryAnalyzer.NOTEQUAL_SIGN,
+				" " + QueryAnalyzer.NOTEQUAL_SIGN + " ").trim();
+		line = line.replaceAll(QueryAnalyzer.STRICTLYLESS_SIGN,
+				" " + QueryAnalyzer.STRICTLYLESS_SIGN + " ").trim();
+		line = line.replaceAll(QueryAnalyzer.STRICTLYGREATER_SIGN,
+				" " + QueryAnalyzer.STRICTLYGREATER_SIGN + " ").trim();
+		line = line.replaceAll(QueryAnalyzer.EQUAL_SIGN,
+				" " + QueryAnalyzer.EQUAL_SIGN + " ").trim();
+
+		line = line.replaceAll(QueryAnalyzer.STRICTLYLESS_SIGN + "\\s+"
+				+ QueryAnalyzer.EQUAL_SIGN, QueryAnalyzer.LESS_SIGN);
+
+		line = line.replaceAll(QueryAnalyzer.STRICTLYGREATER_SIGN + "\\s+"
+				+ QueryAnalyzer.EQUAL_SIGN, QueryAnalyzer.GREATER_SIGN);
+		line = line.replaceAll("!" + "\\s+" + QueryAnalyzer.EQUAL_SIGN,
+				QueryAnalyzer.NOTEQUAL_SIGN);
+
+		parts = line.trim().split("[ ]+");
+
+		if (parts.length == 3) {
+			if (!parts[2].startsWith("\"") || !parts[2].endsWith("\"")) {
+				throw new InputMismatchException("Invalid input stream.");
+			} else {
+				parts[2] = parts[2].replace('\"', ' ').trim();
+			}
+			return chooseRightFieldGetter(parts[0].trim(), parts[2],
+					parts[1].trim());
+		} else {
+			System.out.println("line: "+line);
+			throw new InputMismatchException("Invalid input stream.");
+		}
+
+	}
+
+	/**
+	 * Choses field getter due to given string {@code field}.
+	 * 
+	 * @param field
+	 *            String representation of some field name
+	 * @param stringLiteral
+	 *            literal
+	 * @param comparison
+	 *            string representation of some operator
+	 * @return Conditional expression created from passed values
+	 */
+	public static ConditionalExpression chooseRightFieldGetter(String field,
+			String stringLiteral, String comparison) {
+		IFieldValueGetter fieldGetter = null;
+		switch (field) {
+		case ("jmbag"):
+			fieldGetter = new GetJmbag();
+			break;
+		case ("firstName"):
+			fieldGetter = new GetFirstName();
+			break;
+		case ("lastName"):
+			fieldGetter = new GetLastName();
+			break;
+		default:
+			throw new InputMismatchException("Invalid input stream.");
+
+		}
+		return chooseRightComparisonOperator(fieldGetter, stringLiteral,
+				comparison);
+
+	}
+
+	/**
+	 * Chooses comparison operator due to given string {@code comparison}.
+	 * 
+	 * @param fieldGetter
+	 *            value field getter
+	 * @param stringLiteral
+	 *            literal
+	 * @param comparison
+	 *            string representation of some operator
+	 * @return Conditional expression created from passed values
+	 */
+	public static ConditionalExpression chooseRightComparisonOperator(
+			IFieldValueGetter fieldGetter, String stringLiteral,
+			String comparison) {
+		System.out.println(comparison+" in chooseRightComparisonFilter");
+		switch (comparison) {
+		case (QueryAnalyzer.EQUAL_SIGN):
+			return new ConditionalExpression(fieldGetter, new Equal(),
+					stringLiteral);
+		case (QueryAnalyzer.NOTEQUAL_SIGN):
+			return new ConditionalExpression(fieldGetter, new NotEqual(),
+					stringLiteral);
+		case (QueryAnalyzer.LESS_SIGN):
+			return new ConditionalExpression(fieldGetter, new Less(),
+					stringLiteral);
+		case (QueryAnalyzer.STRICTLYLESS_SIGN):
+
+			return new ConditionalExpression(fieldGetter, new StrictlyLess(),
+					stringLiteral);
+		case (QueryAnalyzer.GREATER_SIGN):
+			return new ConditionalExpression(fieldGetter, new Greater(),
+					stringLiteral);
+		case (QueryAnalyzer.STRICTLYGREATER_SIGN):
+			return new ConditionalExpression(fieldGetter, new StrictlyGreater(),
+					stringLiteral);
+		case (QueryAnalyzer.LIKE):
+			// System.out.println(comparison +"LIKE");
+			return new ConditionalExpression(fieldGetter, new Like(),
+					stringLiteral);
+		default:
+			System.out.println();
+			throw new InputMismatchException("Invalid input stream.");
+
+		}
+
+	}
+
+
+	@Override
+	public boolean accepts(StudentRecord record) {
+		for (ConditionalExpression exp : expressions) {
+			if (!exp.getComparisonOperator().satisfied(
+					exp.getFieldGetter().get(record), exp.getStringLiteral())) { // string
+																					// literal
+																					// is
+																					// on
+																					// the
+																					// right
+																					// of
+																					// comparison
+				return false;
+			}
+		}
+		return true;
+	}
+
+}

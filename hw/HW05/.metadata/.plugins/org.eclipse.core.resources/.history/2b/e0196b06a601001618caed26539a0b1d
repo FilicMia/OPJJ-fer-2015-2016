@@ -1,0 +1,29 @@
+package hr.fer.zemris.java.tecaj.hw5.db;
+
+public enum queryAnalyzerConstants {
+	/** Name of query command. */
+	QUERY("query");
+	/** Name of indexquery command */
+	INDEXQUERY("indexquery");
+
+	/** Sign used in strictly less than comparison. */
+	STRICTLYLESS_SIGN("<"),
+
+	/** Sign used in strictly greater than comparison. */
+	STRICTLYGREATER_SIGN(">"),
+
+	/** Sign used in less than comparison. */
+	LESS_SIGN ("<="),
+
+	/** Sign used in greater than comparison. */
+	GREATER_SIGN(">="),
+
+	/** Sign used in equal comparison. */
+	EQUAL_SIGN ("="),
+
+	/** Sign used in not equal comparison. */
+	NOTEQUAL_SIGN("!="),
+
+	/** Sign used in like comparison. */
+	pLIKE("LIKE");
+}

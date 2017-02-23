@@ -1,0 +1,12 @@
+package hr.fer.zemris.java.cstr;
+
+public class Test {
+
+	public static void main(String[] args) {
+		String str = "bv ahoawegbav kj";
+		str = str.replaceAll("", "KK");
+		System.out.println(str.substring(5, 3));
+
+	}
+
+}

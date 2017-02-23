@@ -1,0 +1,27 @@
+package hr.fer.zemris.java.graphics.shapes;
+
+/**
+ * Implements the geometric shape rectangle. Each rectangle is specified by its
+ * upper left corner and its width and height.
+ * 
+ * @author Mia FIlić
+ *
+ */
+public class Rectangle extends AbstaractRectangle{
+	/**
+	 * COnstructor that sets properties of the rectangle.
+	 * 
+	 * @param x
+	 *            x coordinate of the upper left corner of the rectangle
+	 * @param y
+	 *            y coordinate of the upper left corner of the rectangle
+	 * @param height
+	 *            Height of the rectangle.
+	 * @param width
+	 *            Width of the rectangle.
+	 */
+	public Rectangle(int x, int y, int height, int width) {
+		super(x,y,height,width);
+	}
+
+}
